@@ -1,16 +1,17 @@
 export default class Ship {
-  constructor(length) {
+  constructor(length, name = length.toString(), direction = 'horizontal') {
     this.length = length;
     this.hits = 0;
-    this.sunk = false;
+    this.direction = direction;
+    this.name = name;
   }
 
   hit() {
+    if (this.isSunk()) return;
     this.hits++;
-    this.isSunk();
   }
 
   isSunk() {
-    this.sunk = this.hits === this.length;
+    return this.hits === this.length;
   }
 }
