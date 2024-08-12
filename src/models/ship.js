@@ -1,9 +1,12 @@
+import { validateShip } from './validations/validations.js';
+
 export default class Ship {
   constructor(length, name = length.toString(), direction = 'horizontal') {
+    validateShip(length, direction);
     this.length = length;
-    this.hits = 0;
-    this.direction = direction;
     this.name = name;
+    this.direction = direction;
+    this.hits = 0;
   }
 
   hit() {

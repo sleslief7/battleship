@@ -4,7 +4,8 @@ import { deepCopyShuffleArray } from '../utils/utils.js';
 
 export default class Gameboard {
   constructor() {
-    this.missedAttacks = {};
+    this.missedAttacks = new Set();
+    this.hits = new Set();
     this.ships = [];
     this.boardSize = BOARD_SIZE;
     this.board = Array(this.boardSize)
@@ -53,12 +54,12 @@ export default class Gameboard {
     });
 
     ships.forEach((ship) => {
-      let x = rand();
-      let y = rand();
+      let x = this.rand();
+      let y = this.rand();
       while (!this.canPlaceShip(ship, x, y)) {
         ship.direction = this.rand(2) === 0 ? 'horizontal' : 'vertical';
-        x = rand();
-        y = rand();
+        x = this.rand();
+        y = this.rand();
       }
       this.placeShip(ship, x, y);
     });
@@ -66,11 +67,16 @@ export default class Gameboard {
 
   receiveAttack(x, y) {
     if (this.board[x][y]) {
+      let ship = this.board[x][y];
+      ship.hit();
+      this.hits.add(`[${x}, ${y}]`);
+    } else {
+      this.missedAttacks.add(`[${x}, ${y}]`);
     }
   }
 
-  missAttack(x, y) {
-    this.missedAttacks[`${x}, ${y}`] = true;
+  areAllShipsSunk() {
+    return this.ships.every((ship) => ship.isSunk());
   }
 
   printBoardToConsole() {
