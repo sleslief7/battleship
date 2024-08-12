@@ -1,5 +1,5 @@
-import Gameboard from './src/models/gameboard.js';
-import Ship from './src/models/ship.js';
+import Gameboard from './models/gameboard.js';
+import Ship from './models/ship.js';
 
 let game = new Gameboard();
 game.placeShip(new Ship(5), 1, 2);
