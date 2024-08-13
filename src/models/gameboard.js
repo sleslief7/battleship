@@ -4,7 +4,7 @@ import { deepCopyShuffleArray } from '../utils/utils.js';
 
 export default class Gameboard {
   constructor() {
-    this.missedAttacks = new Set();
+    this.misses = new Set();
     this.hits = new Set();
     this.ships = [];
     this.boardSize = BOARD_SIZE;
@@ -71,23 +71,11 @@ export default class Gameboard {
       ship.hit();
       this.hits.add(`[${x}, ${y}]`);
     } else {
-      this.missedAttacks.add(`[${x}, ${y}]`);
+      this.misses.add(`[${x}, ${y}]`);
     }
   }
 
   areAllShipsSunk() {
     return this.ships.every((ship) => ship.isSunk());
-  }
-
-  printBoardToConsole() {
-    let log = '';
-    for (let y = this.boardSize; y >= 0; y--) {
-      for (let x = 0; x < this.boardSize; x++) {
-        const s = this.board[x][y];
-        log += `${!s ? '[ ]' : `[${s.length}]`}`;
-      }
-      log += '\n';
-    }
-    console.log(log);
   }
 }
