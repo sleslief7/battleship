@@ -37,6 +37,7 @@ export default class Gameboard {
       const dX = isHorizontal ? i : 0;
       const dY = !isHorizontal ? i : 0;
       this.board[x + dX][y + dY] = ship;
+      ship.coordinates.push([x + dX, y + dY]);
     }
     this.ships.push(ship);
   }

@@ -1,3 +1,25 @@
+@font-face {
+  font-family: 'DMSans';
+  src: url('../assets/DMSans-Regular.ttf');
+  font-style: normal;
+  font-weight: 200;
+}
+
+body {
+  font-family: DMSans, sans-serif;
+}
+
+h1 {
+  font-weight: 800;
+  font-size: 3rem;
+}
+
+#boards-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
 .board {
   width: 750px;
   height: 750px;
@@ -10,7 +32,7 @@
   cursor: pointer;
 }
 
-.grid-item:hover {
+.grid-item:hover:not(.hit, .miss, .sunk) {
   background-color: aquamarine;
 }
 
@@ -24,4 +46,12 @@
 
 .miss {
   background-color: gray;
+}
+
+.sunk {
+  background-color: black;
+}
+
+.pointer-events-disabled {
+  pointer-events: none;
 }
