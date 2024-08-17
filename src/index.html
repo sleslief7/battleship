@@ -7,17 +7,38 @@
   </head>
   <body>
     <h1 id="title">Battleship</h1>
-    <p id="result"></p>
-    <div id="boards-container">
-      <div>
-        <h2 class="players" id="player-one">Player One</h2>
-        <div id="board-left" class="gameBoard"></div>
-      </div>
-      <div>
-        <h2 class="players" id="player-two">Player Two</h2>
-        <div id="board-right" class="gameBoard"></div>
+    <div id="landing-page">
+      <div id="player-type-selection-container" class="hidden">
+        <div class="vs" data-left-type="human" data-right-type="human">
+          Human vs Human
+        </div>
+        <div class="vs" data-left-type="human" data-right-type="cpu">
+          Human vs CPU
+        </div>
+        <div class="vs" data-left-type="cpu" data-right-type="cpu">
+          CPU vs CPU
+        </div>
       </div>
     </div>
-    <button></button>
+    <div id="player-details-page" class="hidden">
+      <label for="difficulty-cp-one">Computer difficulty:</label>
+      <select name="difficulty" id="difficulty-cp-one">
+        <option value="easy">Easy</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+    <div id="game-page" class="">
+      <p id="result">j.,b</p>
+      <div id="boards-container">
+        <div>
+          <h2 class="players" id="player-one"></h2>
+          <div id="left-board" class="gameBoard"></div>
+        </div>
+        <div>
+          <h2 class="players" id="player-two"></h2>
+          <div id="right-board" class="gameBoard"></div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

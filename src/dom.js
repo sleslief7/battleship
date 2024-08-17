@@ -1,6 +1,7 @@
 const result = document.getElementById('result');
 
-export function buildBoard(gameboard, side, player) {
+export function buildBoard(player) {
+  const { gameboard, boardId, name } = player;
   let { board, boardSize } = gameboard;
 
   const boardDiv = document.createElement('div');
@@ -14,23 +15,31 @@ export function buildBoard(gameboard, side, player) {
       tile.classList.add(`grid-item`);
       tile.setAttribute('data-x', x);
       tile.setAttribute('data-y', y);
-      tile.onclick = () => {
-        gameboard.receiveAttack(x, y);
-        refreshTile(gameboard, tile, x, y);
-        if (ship && ship.isSunk()) showShipHasSunk(ship, side);
-        if (gameboard.areAllShipsSunk()) {
-          document.querySelectorAll('.board').forEach((board) => {
-            board.classList.toggle('pointer-events-disabled', true);
-          });
-          result.textContent = `${player} won`;
-        }
+      tile.onclick = (e) => {
+        handleTileClick(e, gameboard, boardId, name);
       };
-      if (ship && side === 'board-left') tile.classList.add('ship');
+      if (ship && boardId === 'left-board') tile.classList.add('ship');
       refreshTile(gameboard, tile, x, y);
       boardDiv.appendChild(tile);
     }
   }
   return boardDiv;
+}
+
+function handleTileClick(e, gameboard, boardId, name) {
+  const tile = e.currentTarget;
+  const x = tile.getAttribute('data-x');
+  const y = tile.getAttribute('data-y');
+  const ship = gameboard.board[x][y];
+  gameboard.receiveAttack(x, y);
+  refreshTile(gameboard, tile, x, y);
+  if (ship && ship.isSunk()) showShipHasSunk(ship, boardId);
+  if (gameboard.areAllShipsSunk()) {
+    document.querySelectorAll('.board').forEach((board) => {
+      board.classList.toggle('pointer-events-disabled', true);
+    });
+    result.textContent = `${name} won`;
+  }
 }
 
 function refreshTile(gameBoard, tile, x, y) {
@@ -53,10 +62,10 @@ function refreshTile(gameBoard, tile, x, y) {
   }
 }
 
-function showShipHasSunk(ship, side) {
+function showShipHasSunk(ship, boardId) {
   result.textContent = `${ship.name} was sunk`;
   ship.coordinates.forEach((coord) => {
-    let parent = document.querySelector(`#${side}`);
+    let parent = document.querySelector(`#${boardId}`);
 
     parent
       .querySelector(`[data-x="${coord[0]}"][data-y="${coord[1]}"]`)
