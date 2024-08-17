@@ -1,6 +1,7 @@
 import './css/styles.css';
 import Player from './models/player.js';
 import { buildBoard } from './dom.js';
+import { SHIP_MODELS } from './constants.js';
 
 let leftType = 'human';
 let rightType = 'cpu';
@@ -10,20 +11,47 @@ let leftName = 'Leslie';
 let rightName = 'Jake';
 const playerOne = new Player(leftType, leftName, 'left');
 const playerTwo = new Player(rightType, rightName, 'right');
+let isRunning = false;
 
-document.getElementById(playerOne.boardId).appendChild(buildBoard(playerOne));
-document.getElementById(playerTwo.boardId).appendChild(buildBoard(playerTwo));
+if (playerOne.type === 'cpu') playerOne.gameboard.placeShipsRandomly();
+if (playerTwo.type === 'cpu') playerTwo.gameboard.placeShipsRandomly();
 
-if (playerOne.type === 'cpu') {
-  playerOne.gameboard.placeShipsRandomly();
+refreshPlayerBoard(playerOne);
+refreshPlayerBoard(playerTwo);
+
+if (playerOne.type === 'human' && !isRunning) {
+  const randomizeBtn = document.getElementById('randomize');
+  document
+    .getElementById('pre-game-controls-container')
+    .classList.toggle('hidden', false);
+  randomizeBtn.addEventListener('click', () => {
+    playerOne.gameboard.placeShipsRandomly();
+    refreshPlayerBoard(playerOne);
+  });
 }
-if (playerTwo.type === 'cpu') {
-  playerTwo.gameboard.placeShipsRandomly();
+
+function refreshPlayerBoard(player) {
+  let boardElement = document.getElementById(player.boardId);
+  boardElement.innerHTML = '';
+  boardElement.appendChild(buildBoard(player));
 }
 
-// let boards = document.querySelectorAll('.board');
-// boards[0].classList.toggle('pointer-events-disabled', false);
-// boards[1].classList.toggle('pointer-events-disabled', true);
+function startGame() {
+  if (
+    playerOne.gameboard.ships.length !== SHIP_MODELS.length ||
+    playerTwo.gameboard.ships.length !== SHIP_MODELS.length
+  ) {
+    alert(`You must place ${SHIP_MODELS.length} ships!`);
+    return;
+  }
+  isRunning = true;
+  document
+    .getElementById('pre-game-controls-container')
+    .classList.toggle('hidden', true);
+  document
+    .getElementById('right-board')
+    .classList.toggle('pointer-events-disabled', false);
+}
 
 function refreshPage() {
   if (leftType === null || rightType === null) setPage(0);
@@ -51,5 +79,7 @@ document.querySelectorAll('.vs').forEach((option) => {
     refreshPage();
   });
 });
+
+document.getElementById('start-game').onclick = startGame;
 
 refreshPage();

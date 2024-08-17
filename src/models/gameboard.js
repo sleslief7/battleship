@@ -48,6 +48,10 @@ export default class Gameboard {
 
   placeShipsRandomly() {
     const models = deepCopyShuffleArray(SHIP_MODELS);
+    this.ships = [];
+    this.board = Array(this.boardSize)
+      .fill()
+      .map(() => Array(this.boardSize).fill(null));
 
     let ships = models.map((model) => {
       let direction = this.rand(2) === 0 ? 'horizontal' : 'vertical';

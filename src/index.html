@@ -32,11 +32,15 @@
       <div id="boards-container">
         <div>
           <h2 class="players" id="player-one"></h2>
-          <div id="left-board" class="gameBoard"></div>
+          <div id="left-board" class="gameBoard pointer-events-disabled"></div>
+          <div id="pre-game-controls-container" class="hidden">
+            <button id="randomize">Randomize ships</button>
+            <button id="start-game">Start Game</button>
+          </div>
         </div>
         <div>
           <h2 class="players" id="player-two"></h2>
-          <div id="right-board" class="gameBoard"></div>
+          <div id="right-board" class="gameBoard pointer-events-disabled"></div>
         </div>
       </div>
     </div>
