@@ -30,13 +30,13 @@ h1 {
   gap: 1px;
 }
 
-.grid-item {
+.tile {
   background-color: rgb(73, 73, 227);
   cursor: pointer;
 }
 
-.grid-item:hover:not(.hit, .miss, .sunk) {
-  background-color: aquamarine;
+.tile:hover:not(.hit, .miss, .sunk) {
+  background-color: rgb(214, 186, 43);
 }
 
 .ship {

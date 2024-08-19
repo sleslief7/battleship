@@ -8,6 +8,7 @@ export default class Gameboard {
     this.hits = new Set();
     this.ships = [];
     this.boardSize = BOARD_SIZE;
+    this.lastPlay = '';
     this.board = Array(this.boardSize)
       .fill()
       .map(() => Array(this.boardSize).fill(null));
@@ -46,6 +47,16 @@ export default class Gameboard {
     return Math.floor(Math.random() * end);
   }
 
+  randomPlay() {
+    let x = this.rand();
+    let y = this.rand();
+    while (this.hits.has(`[${x}, ${y}]`) || this.misses.has(`[${x}, ${y}]`)) {
+      x = this.rand();
+      y = this.rand();
+    }
+    this.receiveAttack(x, y);
+  }
+
   placeShipsRandomly() {
     const models = deepCopyShuffleArray(SHIP_MODELS);
     this.ships = [];
@@ -75,8 +86,12 @@ export default class Gameboard {
       let ship = this.board[x][y];
       ship.hit();
       this.hits.add(`[${x}, ${y}]`);
+      this.lastPlay = 'hit';
+      return true;
     } else {
       this.misses.add(`[${x}, ${y}]`);
+      this.lastPlay = 'miss';
+      return false;
     }
   }
 

@@ -11,6 +11,9 @@ let leftName = 'Leslie';
 let rightName = 'Jake';
 const playerOne = new Player(leftType, leftName, 'left');
 const playerTwo = new Player(rightType, rightName, 'right');
+let rightBoard = document.getElementById('right-board');
+let leftBoard = document.getElementById('left-board');
+const result = document.getElementById('result');
 let isRunning = false;
 
 if (playerOne.type === 'cpu') playerOne.gameboard.placeShipsRandomly();
@@ -34,6 +37,44 @@ function refreshPlayerBoard(player) {
   let boardElement = document.getElementById(player.boardId);
   boardElement.innerHTML = '';
   boardElement.appendChild(buildBoard(player));
+
+  if (player.side === 'right') {
+    rightBoard.querySelectorAll('.tile').forEach((tile) => {
+      tile.addEventListener('click', (e) => {
+        handleTileClick(e, player);
+      });
+    });
+  }
+}
+
+function handleTileClick(e, player) {
+  const { gameboard } = player;
+  const tile = e.currentTarget;
+  const x = tile.getAttribute('data-x');
+  const y = tile.getAttribute('data-y');
+  const ship = gameboard.board[x][y];
+  result.textContent = '';
+  if (gameboard.receiveAttack(x, y)) {
+    result.textContent = `${ship.name} was hit`;
+  }
+  refreshPlayerBoard(player);
+
+  if (gameboard.areAllShipsSunk()) {
+    document.querySelectorAll('.board').forEach((board) => {
+      board.classList.toggle('pointer-events-disabled', true);
+    });
+    result.textContent = `${playerOne.name} won`;
+  }
+
+  rightBoard.classList.toggle('pointer-events-disabled', true);
+  if (!gameboard.areAllShipsSunk()) {
+    setTimeout(() => {
+      result.textContent = '';
+      playerOne.gameboard.randomPlay();
+      refreshPlayerBoard(playerOne);
+      rightBoard.classList.toggle('pointer-events-disabled', false);
+    }, 1000);
+  }
 }
 
 function startGame() {
@@ -48,9 +89,7 @@ function startGame() {
   document
     .getElementById('pre-game-controls-container')
     .classList.toggle('hidden', true);
-  document
-    .getElementById('right-board')
-    .classList.toggle('pointer-events-disabled', false);
+  rightBoard.classList.toggle('pointer-events-disabled', false);
 }
 
 function refreshPage() {
