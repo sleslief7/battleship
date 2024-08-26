@@ -3,12 +3,12 @@ import Player from './models/player.js';
 import { buildBoard } from './dom.js';
 import { SHIP_MODELS } from './constants.js';
 
-let leftType = 'human';
-let rightType = 'cpu';
-let rightDifficulty = 'easy';
-let leftDifficulty = 'easy';
-let leftName = 'Leslie';
-let rightName = 'Jake';
+let leftType = null; //'cpu';
+let rightType = null; //'cpu';
+let rightDifficulty = null; //'easy';
+let leftDifficulty = null; //'easy';
+let leftName = null; //'Leslie';
+let rightName = null; //'Jake';
 const playerOne = new Player(leftType, leftName, 'left');
 const playerTwo = new Player(rightType, rightName, 'right');
 let rightBoard = document.getElementById('right-board');
@@ -90,12 +90,47 @@ function startGame() {
     .getElementById('pre-game-controls-container')
     .classList.toggle('hidden', true);
   rightBoard.classList.toggle('pointer-events-disabled', false);
+
+  if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
+    document.getElementById('start-game').addEventListener('click', () => {
+      isRunning = true;
+      rightBoard.classList.toggle('pointer-events-disabled', true);
+      if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
+        if (isRunning) {
+          while (
+            !playerOne.gameboard.areAllShipsSunk() ||
+            !playerTwo.gameboard.areAllShipsSunk()
+          ) {
+            setTimeout(() => {
+              result.textContent = '';
+              playerOne.gameboard.randomPlay();
+              refreshPlayerBoard(playerOne);
+            }, 1000);
+
+            setTimeout(() => {
+              result.textContent = '';
+              playerTwo.gameboard.randomPlay();
+              refreshPlayerBoard(playerTwo);
+            }, 1000);
+          }
+        }
+      }
+    });
+  }
 }
 
 function refreshPage() {
   if (leftType === null || rightType === null) setPage(0);
   else if (leftDifficulty === null || rightDifficulty === null) setPage(1);
   else setPage(2);
+
+  if (leftType === 'human' && rightType === 'human') {
+    document.getElementById('human-vs-human').classList.toggle('hidden', false);
+  } else if (leftType === 'human' && rightType === 'cpu') {
+    document.getElementById('human-vs-cpu').classList.toggle('hidden', false);
+  } else if (leftType === 'cpu' && rightType === 'cpu') {
+    document.getElementById('cpu-vs-cpu').classList.toggle('hidden', false);
+  }
 }
 
 function setPage(i) {
@@ -119,6 +154,12 @@ document.querySelectorAll('.vs').forEach((option) => {
   });
 });
 
-document.getElementById('start-game').onclick = startGame;
+document.querySelectorAll('.submit-btn').forEach((submit) => {
+  option.addEventListener('click', (e) => {
+    setPage(2);
+    refreshPage();
+  });
+});
 
+document.getElementById('start-game').onclick = startGame;
 refreshPage();
