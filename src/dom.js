@@ -13,7 +13,7 @@ export function buildBoard(player) {
       tile.classList.add(`tile`);
       tile.setAttribute('data-x', x);
       tile.setAttribute('data-y', y);
-      if (ship && player.type === 'human') tile.classList.add('ship');
+      if (ship && (player.type === 'human' || true)) tile.classList.add('ship'); // TODO
       colorTile(gameboard, tile, x, y);
       boardDiv.appendChild(tile);
     }

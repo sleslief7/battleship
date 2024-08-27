@@ -16,29 +16,15 @@ let leftBoard = document.getElementById('left-board');
 const result = document.getElementById('result');
 let isRunning = false;
 
-if (playerOne.type === 'cpu') playerOne.gameboard.placeShipsRandomly();
-if (playerTwo.type === 'cpu') playerTwo.gameboard.placeShipsRandomly();
-
 refreshPlayerBoard(playerOne);
 refreshPlayerBoard(playerTwo);
-
-if (playerOne.type === 'human' && !isRunning) {
-  const randomizeBtn = document.getElementById('randomize');
-  document
-    .getElementById('pre-game-controls-container')
-    .classList.toggle('hidden', false);
-  randomizeBtn.addEventListener('click', () => {
-    playerOne.gameboard.placeShipsRandomly();
-    refreshPlayerBoard(playerOne);
-  });
-}
 
 function refreshPlayerBoard(player) {
   let boardElement = document.getElementById(player.boardId);
   boardElement.innerHTML = '';
   boardElement.appendChild(buildBoard(player));
 
-  if (player.side === 'right') {
+  if (player.side === 'right' && player.type === 'human') {
     rightBoard.querySelectorAll('.tile').forEach((tile) => {
       tile.addEventListener('click', (e) => {
         handleTileClick(e, player);
@@ -90,33 +76,6 @@ function startGame() {
     .getElementById('pre-game-controls-container')
     .classList.toggle('hidden', true);
   rightBoard.classList.toggle('pointer-events-disabled', false);
-
-  if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
-    document.getElementById('start-game').addEventListener('click', () => {
-      isRunning = true;
-      rightBoard.classList.toggle('pointer-events-disabled', true);
-      if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
-        if (isRunning) {
-          while (
-            !playerOne.gameboard.areAllShipsSunk() ||
-            !playerTwo.gameboard.areAllShipsSunk()
-          ) {
-            setTimeout(() => {
-              result.textContent = '';
-              playerOne.gameboard.randomPlay();
-              refreshPlayerBoard(playerOne);
-            }, 1000);
-
-            setTimeout(() => {
-              result.textContent = '';
-              playerTwo.gameboard.randomPlay();
-              refreshPlayerBoard(playerTwo);
-            }, 1000);
-          }
-        }
-      }
-    });
-  }
 }
 
 function refreshPage() {
@@ -155,11 +114,73 @@ document.querySelectorAll('.vs').forEach((option) => {
 });
 
 document.querySelectorAll('.submit-btn').forEach((submit) => {
-  option.addEventListener('click', (e) => {
+  submit.addEventListener('click', () => {
     setPage(2);
-    refreshPage();
+    playerOne.type = leftType;
+    playerTwo.type = rightType;
+    if (playerOne.type === 'human' && !isRunning) {
+      const randomizeBtn = document.getElementById('randomize');
+      document
+        .getElementById('pre-game-controls-container')
+        .classList.toggle('hidden', false);
+      randomizeBtn.addEventListener('click', () => {
+        playerOne.gameboard.placeShipsRandomly();
+        refreshPlayerBoard(playerOne);
+      });
+    }
+
+    handleCpuVsCpuGame();
   });
 });
+
+function handleCpuVsCpuGame() {
+  if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
+    if (playerOne.type === 'cpu') {
+      playerOne.gameboard.placeShipsRandomly();
+      refreshPlayerBoard(playerOne);
+    }
+    if (playerTwo.type === 'cpu') {
+      playerTwo.gameboard.placeShipsRandomly();
+      refreshPlayerBoard(playerTwo);
+    }
+    let preGameControls = document.getElementById(
+      'pre-game-controls-container'
+    );
+    preGameControls.classList.toggle('hidden', false);
+    preGameControls.querySelectorAll('button').forEach((button) => {
+      button.classList.toggle('hidden', true);
+    });
+    let startCpuGameBtn = document.getElementById('start-cpu-game');
+
+    startCpuGameBtn.classList.toggle('hidden', false);
+
+    startCpuGameBtn.addEventListener('click', async () => {
+      preGameControls.classList.toggle('hidden', true);
+
+      isRunning = true;
+
+      rightBoard.classList.toggle('pointer-events-disabled', true);
+
+      if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
+        isRunning = true;
+        let isLeftPlayerTurn = true;
+        while (isRunning) {
+          const currentPlayer = isLeftPlayerTurn ? playerOne : playerTwo;
+          await delay(100);
+          result.textContent = '';
+          currentPlayer.gameboard.randomPlay();
+          refreshPlayerBoard(currentPlayer);
+          isRunning = !currentPlayer.gameboard.areAllShipsSunk();
+          isLeftPlayerTurn = !isLeftPlayerTurn;
+        }
+      }
+    });
+  }
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 document.getElementById('start-game').onclick = startGame;
 refreshPage();
