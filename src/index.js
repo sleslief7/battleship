@@ -2,36 +2,18 @@ import './css/styles.css';
 import Player from './models/player.js';
 import { buildBoard } from './dom.js';
 import { SHIP_MODELS } from './constants.js';
+import { createPlayerInput } from './createPlayerInfoScreen.js';
 
-let leftType = null; //'cpu';
-let rightType = null; //'cpu';
-let rightDifficulty = null; //'easy';
-let leftDifficulty = null; //'easy';
-let leftName = null; //'Leslie';
-let rightName = null; //'Jake';
-const playerOne = new Player(leftType, leftName, 'left');
-const playerTwo = new Player(rightType, rightName, 'right');
+let playerOne = null;
+let playerTwo = null;
+let leftType = null;
+let rightType = null;
 let rightBoard = document.getElementById('right-board');
 let leftBoard = document.getElementById('left-board');
 const result = document.getElementById('result');
+const randomizeBtn = document.getElementById('randomize');
+const submitBtn = document.getElementById('submit-btn');
 let isRunning = false;
-
-refreshPlayerBoard(playerOne);
-refreshPlayerBoard(playerTwo);
-
-function refreshPlayerBoard(player) {
-  let boardElement = document.getElementById(player.boardId);
-  boardElement.innerHTML = '';
-  boardElement.appendChild(buildBoard(player));
-
-  if (player.side === 'right' && player.type === 'human') {
-    rightBoard.querySelectorAll('.tile').forEach((tile) => {
-      tile.addEventListener('click', (e) => {
-        handleTileClick(e, player);
-      });
-    });
-  }
-}
 
 function handleTileClick(e, player) {
   const { gameboard } = player;
@@ -80,16 +62,8 @@ function startGame() {
 
 function refreshPage() {
   if (leftType === null || rightType === null) setPage(0);
-  else if (leftDifficulty === null || rightDifficulty === null) setPage(1);
+  else if (leftType && rightType) setPage(1);
   else setPage(2);
-
-  if (leftType === 'human' && rightType === 'human') {
-    document.getElementById('human-vs-human').classList.toggle('hidden', false);
-  } else if (leftType === 'human' && rightType === 'cpu') {
-    document.getElementById('human-vs-cpu').classList.toggle('hidden', false);
-  } else if (leftType === 'cpu' && rightType === 'cpu') {
-    document.getElementById('cpu-vs-cpu').classList.toggle('hidden', false);
-  }
 }
 
 function setPage(i) {
@@ -109,73 +83,115 @@ document.querySelectorAll('.vs').forEach((option) => {
     const element = e.currentTarget;
     leftType = element.getAttribute('data-left-type');
     rightType = element.getAttribute('data-right-type');
+    let playerParams = document.getElementById('player-params-container');
+    playerParams.appendChild(createPlayerInput(leftType, 'left'));
+    playerParams.appendChild(createPlayerInput(rightType, 'right'));
     refreshPage();
   });
 });
 
-document.querySelectorAll('.submit-btn').forEach((submit) => {
-  submit.addEventListener('click', () => {
-    setPage(2);
-    playerOne.type = leftType;
-    playerTwo.type = rightType;
-    if (playerOne.type === 'human' && !isRunning) {
-      const randomizeBtn = document.getElementById('randomize');
-      document
-        .getElementById('pre-game-controls-container')
-        .classList.toggle('hidden', false);
-      randomizeBtn.addEventListener('click', () => {
-        playerOne.gameboard.placeShipsRandomly();
-        refreshPlayerBoard(playerOne);
-      });
-    }
+submitBtn.addEventListener('click', () => {
+  setPage(2);
 
+  let leftName = document.getElementById('left-name')?.value;
+  let rightName = document.getElementById('right-name')?.value;
+  let leftDifficulty = document.getElementById('left-difficulty')?.value;
+  let rightDifficulty = document.getElementById('right-difficulty')?.value;
+
+  playerOne = new Player(leftType, leftName, leftDifficulty, 'left');
+  playerTwo = new Player(rightType, rightName, rightDifficulty, 'right');
+
+  if (leftType === 'human' && rightType === 'cpu') {
+    playerOne.name = leftName ? leftName : 'Human';
+    playerTwo.name = 'CPU';
+    displayNames();
+  } else if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
+    playerOne.name = 'CPU One';
+    playerTwo.name = 'CPU Two';
+    displayNames();
     handleCpuVsCpuGame();
-  });
-});
+  } else {
+    playerOne.name = leftName ? leftName : 'Human One';
+    playerTwo.name = rightName ? rightName : 'Human Two';
+    displayNames();
+  }
 
-function handleCpuVsCpuGame() {
-  if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
-    if (playerOne.type === 'cpu') {
+  if (playerOne.type === 'human' && !isRunning) {
+    document
+      .getElementById('pre-game-controls-container')
+      .classList.toggle('hidden', false);
+    randomizeBtn.addEventListener('click', () => {
       playerOne.gameboard.placeShipsRandomly();
       refreshPlayerBoard(playerOne);
-    }
-    if (playerTwo.type === 'cpu') {
-      playerTwo.gameboard.placeShipsRandomly();
-      refreshPlayerBoard(playerTwo);
-    }
-    let preGameControls = document.getElementById(
-      'pre-game-controls-container'
-    );
-    preGameControls.classList.toggle('hidden', false);
-    preGameControls.querySelectorAll('button').forEach((button) => {
-      button.classList.toggle('hidden', true);
-    });
-    let startCpuGameBtn = document.getElementById('start-cpu-game');
-
-    startCpuGameBtn.classList.toggle('hidden', false);
-
-    startCpuGameBtn.addEventListener('click', async () => {
-      preGameControls.classList.toggle('hidden', true);
-
-      isRunning = true;
-
-      rightBoard.classList.toggle('pointer-events-disabled', true);
-
-      if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
-        isRunning = true;
-        let isLeftPlayerTurn = true;
-        while (isRunning) {
-          const currentPlayer = isLeftPlayerTurn ? playerOne : playerTwo;
-          await delay(100);
-          result.textContent = '';
-          currentPlayer.gameboard.randomPlay();
-          refreshPlayerBoard(currentPlayer);
-          isRunning = !currentPlayer.gameboard.areAllShipsSunk();
-          isLeftPlayerTurn = !isLeftPlayerTurn;
-        }
-      }
     });
   }
+});
+
+function refreshPlayerBoard(player) {
+  let boardElement = document.getElementById(player.boardId);
+  boardElement.innerHTML = '';
+  boardElement.appendChild(buildBoard(player));
+
+  if (player.side === 'right' && player.type === 'human') {
+    rightBoard.querySelectorAll('.tile').forEach((tile) => {
+      tile.addEventListener('click', (e) => {
+        handleTileClick(e, player);
+      });
+    });
+  }
+}
+
+function displayNames() {
+  document.getElementById('player-one').textContent = playerOne.name;
+  document.getElementById('player-two').textContent = playerTwo.name;
+}
+
+function handleCpuVsCpuGame() {
+  placePlayerShips(playerOne);
+  placePlayerShips(playerTwo);
+
+  let preGameControls = document.getElementById('pre-game-controls-container');
+  preGameControls.classList.toggle('hidden', false);
+  preGameControls.querySelectorAll('button').forEach((button) => {
+    button.classList.toggle('hidden', true);
+  });
+  let startCpuGameBtn = document.getElementById('start-cpu-game');
+
+  startCpuGameBtn.classList.toggle('hidden', false);
+
+  startCpuGameBtn.addEventListener('click', async () => {
+    preGameControls.classList.toggle('hidden', true);
+
+    rightBoard.classList.toggle('pointer-events-disabled', true);
+    isRunning = true;
+    let isLeftPlayerTurn = true;
+    while (isRunning) {
+      const currentPlayer = isLeftPlayerTurn ? playerOne : playerTwo;
+      const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
+      await delay(100);
+      result.textContent = '';
+      if (currentPlayer.difficulty === 'easy') {
+        oppositePlayer.gameboard.randomPlay();
+      } else {
+        oppositePlayer.gameboard.randomPlay();
+      }
+      refreshPlayerBoard(currentPlayer);
+      isRunning = !currentPlayer.gameboard.areAllShipsSunk();
+      isLeftPlayerTurn = !isLeftPlayerTurn;
+    }
+  });
+}
+
+function hideRightBoardShips() {
+  rightBoard
+    .querySelector('.board')
+    .querySelectorAll('.tile')
+    .forEach((tile) => tile.classList.toggle('ship', false));
+}
+
+function placePlayerShips(player) {
+  player.gameboard.placeShipsRandomly();
+  refreshPlayerBoard(player);
 }
 
 function delay(ms) {
