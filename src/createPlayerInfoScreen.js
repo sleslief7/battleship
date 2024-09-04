@@ -23,7 +23,7 @@ export function createPlayerInput(playerType, side) {
       <label for="${side}-name">${capitalizeFirstLetter(
       side
     )} player name: </label>
-      <input type="text" id="${side}-name">
+      <input type="text" id="${side}-name" maxlength="20">
     
     `;
     container.appendChild(humanContainer);

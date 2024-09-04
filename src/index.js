@@ -3,6 +3,7 @@ import Player from './models/player.js';
 import { buildBoard } from './dom.js';
 import { SHIP_MODELS } from './constants.js';
 import { createPlayerInput } from './createPlayerInfoScreen.js';
+import { shipsBoardDisplay, displayHitShip } from './shipsBoard.js';
 
 let playerOne = null;
 let playerTwo = null;
@@ -21,9 +22,12 @@ function handleTileClick(e, player) {
   const x = tile.getAttribute('data-x');
   const y = tile.getAttribute('data-y');
   const ship = gameboard.board[x][y];
-  result.textContent = '';
+
   if (gameboard.receiveAttack(x, y)) {
     result.textContent = `${ship.name} was hit`;
+    displayHitShip(ship);
+  } else {
+    result.textContent = 'You missed';
   }
   refreshPlayerBoard(player);
 
@@ -37,8 +41,13 @@ function handleTileClick(e, player) {
   rightBoard.classList.toggle('pointer-events-disabled', true);
   if (!gameboard.areAllShipsSunk()) {
     setTimeout(() => {
-      result.textContent = '';
-      playerOne.gameboard.randomPlay();
+      let currentShip = playerOne.gameboard.randomPlay();
+      if (currentShip) {
+        result.textContent = `${currentShip.name} was hit`;
+        displayHitShip(currentShip);
+      } else {
+        result.textContent = 'CPU missed!';
+      }
       refreshPlayerBoard(playerOne);
       rightBoard.classList.toggle('pointer-events-disabled', false);
     }, 1000);
@@ -105,6 +114,7 @@ submitBtn.addEventListener('click', () => {
     playerOne.name = leftName ? leftName : 'Human';
     playerTwo.name = 'CPU';
     displayNames();
+    handleHumanVsCpuGame();
   } else if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
     playerOne.name = 'CPU One';
     playerTwo.name = 'CPU Two';
@@ -131,12 +141,14 @@ function refreshPlayerBoard(player) {
   let boardElement = document.getElementById(player.boardId);
   boardElement.innerHTML = '';
   boardElement.appendChild(buildBoard(player));
+  boardElement.appendChild(shipsBoardDisplay(player.side));
 
-  if (player.side === 'right' && player.type === 'human') {
+  if (player.side === 'right' && player.type === 'cpu') {
     rightBoard.querySelectorAll('.tile').forEach((tile) => {
       tile.addEventListener('click', (e) => {
         handleTileClick(e, player);
       });
+      tile.classList.toggle('ship', false);
     });
   }
 }
@@ -146,6 +158,10 @@ function displayNames() {
   document.getElementById('player-two').textContent = playerTwo.name;
 }
 
+function handleHumanVsCpuGame() {
+  refreshPlayerBoard(playerOne);
+  placePlayerShips(playerTwo);
+}
 function handleCpuVsCpuGame() {
   placePlayerShips(playerOne);
   placePlayerShips(playerTwo);
@@ -180,13 +196,6 @@ function handleCpuVsCpuGame() {
       isLeftPlayerTurn = !isLeftPlayerTurn;
     }
   });
-}
-
-function hideRightBoardShips() {
-  rightBoard
-    .querySelector('.board')
-    .querySelectorAll('.tile')
-    .forEach((tile) => tile.classList.toggle('ship', false));
 }
 
 function placePlayerShips(player) {

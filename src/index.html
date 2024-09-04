@@ -21,8 +21,10 @@
       </div>
     </div>
     <div id="player-details-page" class="hidden">
-      <div id="player-params-container"></div>
-      <button id="submit-btn">Submit</button>
+      <div id="player-info-container">
+        <div id="player-params-container"></div>
+        <button id="submit-btn">Submit</button>
+      </div>
     </div>
     <div id="game-page" class="">
       <p id="result"></p>
@@ -30,16 +32,18 @@
         <div>
           <h2 class="players" id="player-one"></h2>
           <div id="left-board" class="gameBoard pointer-events-disabled"></div>
-          <div id="pre-game-controls-container" class="hidden">
-            <button id="randomize">Randomize ships</button>
-            <button id="start-game">Start Game</button>
-            <button id="start-cpu-game" class="hidden">Start Game</button>
-          </div>
         </div>
         <div>
           <h2 class="players" id="player-two"></h2>
           <div id="right-board" class="gameBoard pointer-events-disabled"></div>
         </div>
+      </div>
+      <div id="pre-game-controls-container" class="hidden">
+        <button id="randomize" class="pre-game-btns">Randomize ships</button>
+        <button id="start-game" class="pre-game-btns">Start Game</button>
+        <button id="start-cpu-game" class="hidden pre-game-btns">
+          Start Game
+        </button>
       </div>
     </div>
   </body>

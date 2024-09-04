@@ -54,7 +54,7 @@ export default class Gameboard {
       x = this.rand();
       y = this.rand();
     }
-    this.receiveAttack(x, y);
+    return this.receiveAttack(x, y);
   }
 
   placeShipsRandomly() {
@@ -87,11 +87,11 @@ export default class Gameboard {
       ship.hit();
       this.hits.add(`[${x}, ${y}]`);
       this.lastPlay = 'hit';
-      return true;
+      return ship;
     } else {
       this.misses.add(`[${x}, ${y}]`);
       this.lastPlay = 'miss';
-      return false;
+      return null;
     }
   }
 
