@@ -25,7 +25,6 @@ function handleTileClick(e, player) {
 
   if (gameboard.receiveAttack(x, y)) {
     result.textContent = `${ship.name} was hit`;
-    displayHitShip(ship);
   } else {
     result.textContent = 'You missed';
   }
@@ -44,13 +43,12 @@ function handleTileClick(e, player) {
       let currentShip = playerOne.gameboard.randomPlay();
       if (currentShip) {
         result.textContent = `${currentShip.name} was hit`;
-        displayHitShip(currentShip);
       } else {
         result.textContent = 'CPU missed!';
       }
       refreshPlayerBoard(playerOne);
       rightBoard.classList.toggle('pointer-events-disabled', false);
-    }, 1000);
+    }, 1500);
   }
 }
 
@@ -142,6 +140,7 @@ function refreshPlayerBoard(player) {
   boardElement.innerHTML = '';
   boardElement.appendChild(buildBoard(player));
   boardElement.appendChild(shipsBoardDisplay(player.side));
+  displayHitShip(player);
 
   if (player.side === 'right' && player.type === 'cpu') {
     rightBoard.querySelectorAll('.tile').forEach((tile) => {
