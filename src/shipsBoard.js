@@ -28,12 +28,20 @@ export function shipsBoardDisplay(side) {
   return shipsContainer;
 }
 
-export function displayHitShip(ship) {
-  let shipWagons = Array.from(
-    document.querySelectorAll(`.${ship.name} .ship-wagon`)
-  );
+export function displayHitShip(player) {
+  let ships = player.gameboard.ships;
+  let shipsHit = ships.filter((ship) => ship.hits > 0);
+  if (shipsHit.length <= 0) return;
+  for (let i = 0; i < shipsHit.length; i++) {
+    let ship = shipsHit[i];
+    let shipWagons = Array.from(
+      document.querySelectorAll(
+        `.${player.side}-ships-container  .${ship.name} .ship-wagon`
+      )
+    );
 
-  for (let i = 0; i < ship.hits; i++) {
-    shipWagons[i].classList.add('hit');
+    for (let i = 0; i < ship.hits; i++) {
+      shipWagons[i].classList.add('hit');
+    }
   }
 }

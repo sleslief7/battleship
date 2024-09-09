@@ -152,7 +152,6 @@ select {
 
 .right-ships-container,
 .left-ships-container {
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -175,4 +174,10 @@ select {
 
 .ship-name {
   margin-left: 5px;
+}
+
+#left-board,
+#right-board {
+  display: flex;
+  gap: 10px;
 }
