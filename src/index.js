@@ -29,22 +29,35 @@ function handleTileClick(e, player) {
     result.textContent = 'You missed';
   }
   refreshPlayerBoard(player);
+  let opponentPlayer = player.name === playerOne.name ? playerTwo : playerOne;
 
   if (gameboard.areAllShipsSunk()) {
     document.querySelectorAll('.board').forEach((board) => {
       board.classList.toggle('pointer-events-disabled', true);
     });
-    result.textContent = `${playerOne.name} won`;
+    result.textContent = `${opponentPlayer.name} won`;
+    return;
   }
 
   rightBoard.classList.toggle('pointer-events-disabled', true);
-  if (!gameboard.areAllShipsSunk()) {
+  if (
+    !gameboard.areAllShipsSunk() &&
+    !opponentPlayer.gameboard.areAllShipsSunk()
+  ) {
     setTimeout(() => {
       let currentShip = playerOne.gameboard.randomPlay();
       if (currentShip) {
         result.textContent = `${currentShip.name} was hit`;
       } else {
         result.textContent = 'CPU missed!';
+      }
+
+      if (opponentPlayer.gameboard.areAllShipsSunk()) {
+        document.querySelectorAll('.board').forEach((board) => {
+          board.classList.toggle('pointer-events-disabled', true);
+        });
+        result.textContent = `${player.name} won`;
+        return;
       }
       refreshPlayerBoard(playerOne);
       rightBoard.classList.toggle('pointer-events-disabled', false);
@@ -185,12 +198,20 @@ function handleCpuVsCpuGame() {
       const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
       await delay(100);
       result.textContent = '';
-      if (currentPlayer.difficulty === 'easy') {
+      if (currentPlayer.difficulty === 'regular') {
         oppositePlayer.gameboard.randomPlay();
       } else {
         oppositePlayer.gameboard.randomPlay();
       }
       refreshPlayerBoard(currentPlayer);
+
+      if (currentPlayer.gameboard.areAllShipsSunk()) {
+        document.querySelectorAll('.board').forEach((board) => {
+          board.classList.toggle('pointer-events-disabled', true);
+        });
+        result.textContent = `${oppositePlayer.name} won`;
+        return;
+      }
       isRunning = !currentPlayer.gameboard.areAllShipsSunk();
       isLeftPlayerTurn = !isLeftPlayerTurn;
     }

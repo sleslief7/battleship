@@ -9,7 +9,7 @@ export function createPlayerInput(playerType, side) {
       side
     )} difficulty: </label>
       <select name="difficulty" id="${side}-difficulty">
-          <option value="easy">Easy</option>
+          <option value="regular">Regular</option>
           <option value="hard">Hard</option>
       </select>
     `;
