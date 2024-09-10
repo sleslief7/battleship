@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Battleship</title>
+  <script defer src="runtime.bundle.js"></script><script defer src="index.bundle.js"></script></head>
+  <body>
+    <h1 id="title">Battleship</h1>
+    <div id="landing-page">
+      <div id="player-type-selection-container" class="hidden">
+        <!-- <div class="vs" data-left-type="human" data-right-type="human">
+          <p>Human</p>
+          <p>vs</p>
+          <p>Human</p>
+        </div> -->
+        <div class="vs" data-left-type="human" data-right-type="cpu">
+          <p>Human</p>
+          <p>vs</p>
+          <p>CPU</p>
+        </div>
+        <div class="vs" data-left-type="cpu" data-right-type="cpu">
+          <p>CPU</p>
+          <p>vs</p>
+          <p>CPU</p>
+        </div>
+      </div>
+    </div>
+    <div id="player-details-page" class="hidden">
+      <div id="player-info-container">
+        <div id="player-params-container"></div>
+        <button id="submit-btn">Submit</button>
+      </div>
+    </div>
+    <div id="game-page" class="">
+      <p id="result"></p>
+      <div id="boards-container">
+        <div>
+          <h2 class="players" id="player-one"></h2>
+          <div id="left-board" class="gameBoard pointer-events-disabled"></div>
+        </div>
+        <div>
+          <h2 class="players" id="player-two"></h2>
+          <div id="right-board" class="gameBoard pointer-events-disabled"></div>
+        </div>
+      </div>
+      <div id="pre-game-controls-container" class="hidden">
+        <button id="randomize" class="pre-game-btns">Randomize ships</button>
+        <button id="start-game" class="pre-game-btns">Start Game</button>
+        <button id="start-cpu-game" class="hidden pre-game-btns">
+          Start Game
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
