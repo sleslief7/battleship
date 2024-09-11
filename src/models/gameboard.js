@@ -12,6 +12,12 @@ export default class Gameboard {
     this.board = Array(this.boardSize)
       .fill()
       .map(() => Array(this.boardSize).fill(null));
+    this.possibleMoves = [
+      [1, 0],
+      [0, 1],
+      [-1, 0],
+      [0, -1],
+    ];
   }
 
   canPlaceShip(ship, x, y) {
@@ -55,6 +61,21 @@ export default class Gameboard {
       y = this.rand();
     }
     return this.receiveAttack(x, y);
+  }
+
+  hardPlay(x, y) {
+    if (this.hits.has(`[${x}, ${y}]`)) {
+      let allPossibleMoves = this.possibleMoves.map((pm) => [
+        x + pm[0],
+        y + pm[1],
+      ]);
+      let movesAroundTheShip = allPossibleMoves.filter(
+        (coord) => this.board[coord[0]][coord[1]] !== null
+      );
+      // this.receiveAttack(movesAroundTheShip[0][0], movesAroundTheShip[0][1]);
+    } else {
+      // this.randomPlay();
+    }
   }
 
   placeShipsRandomly() {

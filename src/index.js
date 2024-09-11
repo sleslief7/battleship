@@ -22,12 +22,8 @@ function handleTileClick(e, player) {
   const x = tile.getAttribute('data-x');
   const y = tile.getAttribute('data-y');
   const ship = gameboard.board[x][y];
+  gameboard.receiveAttack(x, y);
 
-  if (gameboard.receiveAttack(x, y)) {
-    result.textContent = `${ship.name} was hit`;
-  } else {
-    result.textContent = 'You missed';
-  }
   refreshPlayerBoard(player);
   let opponentPlayer = player.name === playerOne.name ? playerTwo : playerOne;
 
@@ -45,12 +41,7 @@ function handleTileClick(e, player) {
     !opponentPlayer.gameboard.areAllShipsSunk()
   ) {
     setTimeout(() => {
-      let currentShip = playerOne.gameboard.randomPlay();
-      if (currentShip) {
-        result.textContent = `${currentShip.name} was hit`;
-      } else {
-        result.textContent = 'CPU missed!';
-      }
+      playerOne.gameboard.randomPlay();
 
       if (opponentPlayer.gameboard.areAllShipsSunk()) {
         document.querySelectorAll('.board').forEach((board) => {
