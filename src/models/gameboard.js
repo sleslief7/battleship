@@ -3,12 +3,14 @@ import { BOARD_SIZE, SHIP_MODELS } from '../constants.js';
 import { deepCopyShuffleArray } from '../utils/utils.js';
 
 export default class Gameboard {
-  constructor() {
+  constructor(playerType) {
     this.misses = new Set();
     this.hits = new Set();
     this.ships = [];
     this.boardSize = BOARD_SIZE;
     this.lastPlay = '';
+    this.lastCpuHit = [];
+    this.playerType = playerType;
     this.board = Array(this.boardSize)
       .fill()
       .map(() => Array(this.boardSize).fill(null));
@@ -63,19 +65,22 @@ export default class Gameboard {
     return this.receiveAttack(x, y);
   }
 
-  hardPlay(x, y) {
-    if (this.hits.has(`[${x}, ${y}]`)) {
-      let allPossibleMoves = this.possibleMoves.map((pm) => [
-        x + pm[0],
-        y + pm[1],
-      ]);
-      let movesAroundTheShip = allPossibleMoves.filter(
-        (coord) => this.board[coord[0]][coord[1]] !== null
-      );
-      // this.receiveAttack(movesAroundTheShip[0][0], movesAroundTheShip[0][1]);
-    } else {
-      // this.randomPlay();
-    }
+  hardPlay() {
+    if (this.lastCpuHit.length === 0) this.randomPlay();
+    let x = this.lastCpuHit[0];
+    let y = this.lastCpuHit[1];
+    let allPossibleMoves = this.possibleMoves.map((pm) => [
+      x + pm[0],
+      y + pm[1],
+    ]);
+    let movesAroundTheShip = allPossibleMoves.filter(
+      (coord) => this.board[coord[0]][coord[1]] !== null
+    );
+    let randomNumber = this.rand(movesAroundTheShip.length - 1);
+    this.receiveAttack(
+      movesAroundTheShip[randomNumber][0],
+      movesAroundTheShip[randomNumber][1]
+    );
   }
 
   placeShipsRandomly() {
@@ -108,6 +113,10 @@ export default class Gameboard {
       ship.hit();
       this.hits.add(`[${x}, ${y}]`);
       this.lastPlay = 'hit';
+      if (this.playerType == 'cpu') {
+        this.lastCpuHit = [];
+        this.lastCpuHit.push(x, y);
+      }
       return ship;
     } else {
       this.misses.add(`[${x}, ${y}]`);

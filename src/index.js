@@ -41,7 +41,7 @@ function handleTileClick(e, player) {
     !opponentPlayer.gameboard.areAllShipsSunk()
   ) {
     setTimeout(() => {
-      playerOne.gameboard.randomPlay();
+      handleCpuPlay(playerOne);
 
       if (opponentPlayer.gameboard.areAllShipsSunk()) {
         document.querySelectorAll('.board').forEach((board) => {
@@ -53,6 +53,14 @@ function handleTileClick(e, player) {
       refreshPlayerBoard(playerOne);
       rightBoard.classList.toggle('pointer-events-disabled', false);
     }, 1500);
+  }
+}
+
+function handleCpuPlay(player) {
+  if ((player.difficulty = 'regular')) {
+    player.gameboard.randomPlay();
+  } else {
+    player.gameboard.hardPlay();
   }
 }
 
@@ -189,11 +197,7 @@ function handleCpuVsCpuGame() {
       const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
       await delay(100);
       result.textContent = '';
-      if (currentPlayer.difficulty === 'regular') {
-        oppositePlayer.gameboard.randomPlay();
-      } else {
-        oppositePlayer.gameboard.randomPlay();
-      }
+      handleCpuPlay(oppositePlayer);
       refreshPlayerBoard(currentPlayer);
 
       if (currentPlayer.gameboard.areAllShipsSunk()) {
