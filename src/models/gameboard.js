@@ -1,5 +1,5 @@
 import Ship from './ship.js';
-import { BOARD_SIZE, SHIP_MODELS } from '../constants.js';
+import { BOARD_SIZE, SHIP_MODELS, PLAYING_TIME } from '../constants.js';
 import { deepCopyShuffleArray } from '../utils/utils.js';
 
 export default class Gameboard {
@@ -52,7 +52,7 @@ export default class Gameboard {
     return Math.floor(Math.random() * end);
   }
 
-  randomPlay() {
+  async randomPlay() {
     let x = this.rand();
     let y = this.rand();
     while (
@@ -62,11 +62,11 @@ export default class Gameboard {
       x = this.rand();
       y = this.rand();
     }
-
+    await this.delay(PLAYING_TIME);
     return this.receiveAttack(x, y);
   }
 
-  hardPlay() {
+  async hardPlay() {
     if (!this.unresolvedHits.length) return this.randomPlay();
 
     let x = this.unresolvedHits.at(-1)[0];
@@ -78,6 +78,7 @@ export default class Gameboard {
 
     let rand = this.rand(moves.length - 1);
 
+    await this.delay(PLAYING_TIME);
     return this.receiveAttack(moves[rand][0], moves[rand][1]);
   }
 
@@ -210,5 +211,9 @@ export default class Gameboard {
     this.board = Array(this.boardSize)
       .fill()
       .map(() => Array(this.boardSize).fill(null));
+  }
+
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

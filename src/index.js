@@ -16,7 +16,7 @@ const randomizeBtn = document.getElementById('randomize');
 const submitBtn = document.getElementById('submit-btn');
 let isRunning = false;
 
-function handleTileClick(e, player) {
+async function handleTileClick(e, player) {
   const { gameboard } = player;
   const tile = e.currentTarget;
   const x = tile.getAttribute('data-x');
@@ -34,27 +34,25 @@ function handleTileClick(e, player) {
 
   if (play === null) {
     rightBoard.classList.toggle('pointer-events-disabled', true);
-    setTimeout(() => {
-      handleCpuPlay(playerTwo);
+    await handleCpuPlay(playerTwo);
 
-      if (oppositePlayer.gameboard.areAllShipsSunk()) {
-        handleGameEnd(player.name);
-        return;
-      }
-      rightBoard.classList.toggle('pointer-events-disabled', false);
-    }, 500);
+    if (oppositePlayer.gameboard.areAllShipsSunk()) {
+      handleGameEnd(player.name);
+      return;
+    }
+    rightBoard.classList.toggle('pointer-events-disabled', false);
   }
 }
 
-function handleCpuPlay(player) {
+async function handleCpuPlay(player) {
   let oppositePlayer = player.name === playerOne.name ? playerTwo : playerOne;
   let play = true;
   while (play) {
     if (player.difficulty === 'regular') {
-      play = oppositePlayer.gameboard.randomPlay();
+      play = await oppositePlayer.gameboard.randomPlay();
       refreshPlayerBoard(oppositePlayer);
     } else {
-      play = oppositePlayer.gameboard.hardPlay();
+      play = await oppositePlayer.gameboard.hardPlay();
       refreshPlayerBoard(oppositePlayer);
     }
   }
@@ -198,9 +196,8 @@ function handleCpuVsCpuGame() {
     while (isRunning) {
       const currentPlayer = isLeftPlayerTurn ? playerOne : playerTwo;
       const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
-      await delay(100);
       result.textContent = '';
-      handleCpuPlay(oppositePlayer);
+      await handleCpuPlay(oppositePlayer);
       refreshPlayerBoard(currentPlayer);
 
       if (currentPlayer.gameboard.areAllShipsSunk()) {
@@ -219,10 +216,6 @@ function handleCpuVsCpuGame() {
 function placePlayerShips(player) {
   player.gameboard.placeShipsRandomly();
   refreshPlayerBoard(player);
-}
-
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 document.getElementById('start-game').onclick = startGame;
