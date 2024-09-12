@@ -22,46 +22,48 @@ function handleTileClick(e, player) {
   const x = tile.getAttribute('data-x');
   const y = tile.getAttribute('data-y');
   const ship = gameboard.board[x][y];
-  gameboard.receiveAttack(x, y);
+  let oppositePlayer = player.name === playerOne.name ? playerTwo : playerOne;
 
+  let play = gameboard.receiveAttack(x, y);
   refreshPlayerBoard(player);
-  let opponentPlayer = player.name === playerOne.name ? playerTwo : playerOne;
 
   if (gameboard.areAllShipsSunk()) {
-    document.querySelectorAll('.board').forEach((board) => {
-      board.classList.toggle('pointer-events-disabled', true);
-    });
-    result.textContent = `${opponentPlayer.name} won`;
+    handleGameEnd(oppositePlayer.name);
     return;
   }
 
-  rightBoard.classList.toggle('pointer-events-disabled', true);
-  if (
-    !gameboard.areAllShipsSunk() &&
-    !opponentPlayer.gameboard.areAllShipsSunk()
-  ) {
+  if (play === null) {
+    rightBoard.classList.toggle('pointer-events-disabled', true);
     setTimeout(() => {
-      handleCpuPlay(playerOne);
+      handleCpuPlay(playerTwo);
 
-      if (opponentPlayer.gameboard.areAllShipsSunk()) {
-        document.querySelectorAll('.board').forEach((board) => {
-          board.classList.toggle('pointer-events-disabled', true);
-        });
-        result.textContent = `${player.name} won`;
+      if (oppositePlayer.gameboard.areAllShipsSunk()) {
+        handleGameEnd(player.name);
         return;
       }
       refreshPlayerBoard(playerOne);
       rightBoard.classList.toggle('pointer-events-disabled', false);
-    }, 1500);
+    }, 500);
   }
 }
 
 function handleCpuPlay(player) {
-  if ((player.difficulty = 'regular')) {
-    player.gameboard.randomPlay();
-  } else {
-    player.gameboard.hardPlay();
+  let oppositePlayer = player.name === playerOne.name ? playerTwo : playerOne;
+  let play = true;
+  while (play) {
+    if (player.difficulty === 'regular') {
+      play = oppositePlayer.gameboard.randomPlay();
+    } else {
+      play = oppositePlayer.gameboard.hardPlay();
+    }
   }
+}
+
+function handleGameEnd(name) {
+  document.querySelectorAll('.board').forEach((board) => {
+    board.classList.toggle('pointer-events-disabled', true);
+  });
+  result.textContent = `${name} won`;
 }
 
 function startGame() {

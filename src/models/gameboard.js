@@ -8,13 +8,12 @@ export default class Gameboard {
     this.hits = new Set();
     this.ships = [];
     this.boardSize = BOARD_SIZE;
-    this.lastPlay = '';
-    this.lastCpuHit = [];
+    this.unresolvedHits = [];
     this.playerType = playerType;
     this.board = Array(this.boardSize)
       .fill()
       .map(() => Array(this.boardSize).fill(null));
-    this.possibleMoves = [
+    this.directions = [
       [1, 0],
       [0, 1],
       [-1, 0],
@@ -66,20 +65,76 @@ export default class Gameboard {
   }
 
   hardPlay() {
-    if (this.lastCpuHit.length === 0) this.randomPlay();
-    let x = this.lastCpuHit[0];
-    let y = this.lastCpuHit[1];
-    let allPossibleMoves = this.possibleMoves.map((pm) => [
-      x + pm[0],
-      y + pm[1],
-    ]);
-    let movesAroundTheShip = allPossibleMoves.filter(
-      (coord) => this.board[coord[0]][coord[1]] !== null
-    );
-    let randomNumber = this.rand(movesAroundTheShip.length - 1);
-    this.receiveAttack(
-      movesAroundTheShip[randomNumber][0],
-      movesAroundTheShip[randomNumber][1]
+    if (!this.unresolvedHits.length) return this.randomPlay();
+
+    let x = this.unresolvedHits.at(-1)[0];
+    let y = this.unresolvedHits.at(-1)[1];
+
+    let moves = this.getSuggestedMoves(x, y);
+    if (!moves.length) moves = this.getPossibleMoves(x, y);
+    if (!moves.length) return this.randomPlay();
+
+    let rand = this.rand(moves.length - 1);
+    return this.receiveAttack(moves[rand][0], moves[rand][1]);
+  }
+
+  getSuggestedMoves(x, y) {
+    let suggestedMoves = [];
+    let directions = Array.from(
+      new Set(
+        this.directions
+          .map((m) => [x + m[0], y + m[1]])
+          .filter(
+            (coord) =>
+              this.hits.has(`[${coord[0]}, ${coord[1]}]`) &&
+              !this.board[coord[0]][coord[1]]?.isSunk() &&
+              this.isInside(coord[0], coord[1])
+          )
+          .map((m) => JSON.stringify([Math.abs(m[0]), Math.abs(m[1])]))
+      )
+    ).map((str) => JSON.parse(str));
+
+    for (let direction of directions) {
+      const travel = (d) => {
+        let cursor = [x, y];
+        while (true) {
+          cursor = [x + d[0], y + d[1]];
+          if (!this.isInside(...cursor)) break;
+          if (this.board[x][y]?.isSunk()) break;
+          if (
+            !this.hits.has(`[${x}, ${y}]`) &&
+            !this.misses.has(`[${x}, ${y}]`)
+          ) {
+            suggestedMoves.push(cursor);
+            break;
+          }
+        }
+      };
+      travel(direction);
+      direction = [direction[0] * -1, direction[1] * -1];
+      travel(direction);
+    }
+    return suggestedMoves;
+  }
+
+  isInside(x, y) {
+    return x >= 0 && x < this.boardSize && y >= 0 && y < this.boardSize;
+  }
+
+  getPossibleMoves(x, y) {
+    return this.directions
+      .map((pm) => [x + pm[0], y + pm[1]])
+      .filter((coord) => this.canPlay(coord[0], coord[1]));
+  }
+
+  canPlay(x, y) {
+    return (
+      x >= 0 &&
+      y >= 0 &&
+      x < this.boardSize &&
+      y < this.boardSize &&
+      !this.hits.has(`[${x}, ${y}]`) &&
+      !this.misses.has(`[${x}, ${y}]`)
     );
   }
 
@@ -112,15 +167,10 @@ export default class Gameboard {
       let ship = this.board[x][y];
       ship.hit();
       this.hits.add(`[${x}, ${y}]`);
-      this.lastPlay = 'hit';
-      if (this.playerType == 'cpu') {
-        this.lastCpuHit = [];
-        this.lastCpuHit.push(x, y);
-      }
+      this.unresolvedHits.push([x, y]);
       return ship;
     } else {
       this.misses.add(`[${x}, ${y}]`);
-      this.lastPlay = 'miss';
       return null;
     }
   }
