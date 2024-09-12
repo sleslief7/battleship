@@ -41,7 +41,6 @@ function handleTileClick(e, player) {
         handleGameEnd(player.name);
         return;
       }
-      refreshPlayerBoard(playerOne);
       rightBoard.classList.toggle('pointer-events-disabled', false);
     }, 500);
   }
@@ -53,8 +52,10 @@ function handleCpuPlay(player) {
   while (play) {
     if (player.difficulty === 'regular') {
       play = oppositePlayer.gameboard.randomPlay();
+      refreshPlayerBoard(oppositePlayer);
     } else {
       play = oppositePlayer.gameboard.hardPlay();
+      refreshPlayerBoard(oppositePlayer);
     }
   }
 }

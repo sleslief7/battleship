@@ -2,7 +2,7 @@ import Gameboard from './gameboard.js';
 
 export default class Player {
   constructor(type, name, difficulty, side) {
-    this.gameboard = new Gameboard(type);
+    this.gameboard = new Gameboard();
     this.type = type;
     this.name = name;
     this.side = side;

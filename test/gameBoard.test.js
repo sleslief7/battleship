@@ -5,7 +5,7 @@ let gameboard;
 let myShip;
 
 beforeEach(() => {
-  gameboard = new Gameboard('human');
+  gameboard = new Gameboard();
   myShip = new Ship(5, 'myShip', 'vertical');
 });
 test('Inbound location', () => {
