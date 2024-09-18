@@ -25,13 +25,13 @@ export default class Gameboard {
     const length = ship.length;
 
     if (!this.isInside(x, y)) return false;
-    if (isHorizontal && length + x >= this.boardSize) return false;
-    if (!isHorizontal && length + y >= this.boardSize) return false;
+    if (isHorizontal && length + x > this.boardSize) return false;
+    if (!isHorizontal && y - length + 1 < 0) return false;
 
     for (let i = 0; i < length; i++) {
       const dX = isHorizontal ? i : 0;
       const dY = !isHorizontal ? i : 0;
-      if (this.board[x + dX][y + dY] !== null) return false;
+      if (this.board[x + dX][y - dY] !== null) return false;
     }
 
     return true;
@@ -42,8 +42,8 @@ export default class Gameboard {
     for (let i = 0; i < ship.length; i++) {
       const dX = isHorizontal ? i : 0;
       const dY = !isHorizontal ? i : 0;
-      this.board[x + dX][y + dY] = ship;
-      ship.coordinates.push([x + dX, y + dY]);
+      this.board[x + dX][y - dY] = ship;
+      ship.coordinates.push([x + dX, y - dY]);
     }
     this.ships.push(ship);
   }

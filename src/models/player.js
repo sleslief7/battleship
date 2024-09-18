@@ -7,6 +7,6 @@ export default class Player {
     this.name = name;
     this.side = side;
     this.difficulty = difficulty;
-    this.boardId = `${side}-board`;
+    this.boardId = `${side}-player-container`;
   }
 }

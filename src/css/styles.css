@@ -71,13 +71,16 @@ h1 {
 .vs {
   border: 1px solid rgb(159, 159, 159);
   padding: 7px;
-  text-align: center;
-  align-content: center;
   border-radius: 8px;
   width: 200px;
-  height: 200px;
+  height: 150px;
   cursor: pointer;
   font-weight: 900;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .vs:hover {
@@ -121,7 +124,8 @@ select {
   text-align: center;
 }
 
-#submit-btn {
+#submit-btn,
+#home-btn {
   font-size: 1.2rem;
   padding: 5px 10px;
   border-radius: 5px;
@@ -130,7 +134,9 @@ select {
 }
 
 #submit-btn:hover,
-.pre-game-btns:hover {
+.pre-game-btns:hover,
+#home-btn:hover,
+.btn:hover {
   color: white;
   background-color: black;
   border: 2px solid white;
@@ -166,18 +172,75 @@ select {
   gap: 5px;
 }
 
+.board-plus-mini-ships-container {
+  display: flex;
+  gap: 5px;
+}
+
 .ship-and-ship-name,
 .ship-box-container {
   display: flex;
   gap: 2px;
 }
 
+#draggable-ships-container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.draggable-ship {
+  display: flex;
+  margin-bottom: 5px;
+  cursor: grab;
+  width: fit-content;
+  height: fit-content;
+}
+
+.ship-box {
+  width: 30px;
+  height: 30px;
+  background-color: white;
+  margin: 1px;
+}
+
 .ship-name {
   margin-left: 5px;
 }
 
-#left-board,
-#right-board {
+#left-player-container,
+#right-player-container {
   display: flex;
   gap: 10px;
+}
+#result {
+  display: flex;
+  flex-direction: column;
+}
+#home-btn {
+  cursor: pointer;
+  width: 100px;
+  height: 50px;
+}
+
+.human,
+.cpu {
+  font-size: 2.8rem;
+}
+
+.btn {
+  width: fit-content;
+  height: fit-content;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.can-drop {
+  background-color: aqua;
+}
+
+.can-not-drop {
+  background-color: red;
+  cursor: not-allowed;
 }

@@ -4,16 +4,23 @@ import { buildBoard } from './dom.js';
 import { SHIP_MODELS } from './constants.js';
 import { createPlayerInput } from './createPlayerInfoScreen.js';
 import { shipsBoardDisplay, displayHitShip } from './shipsBoard.js';
+import {
+  buildDraggableShips,
+  dragOverHandler,
+  dropHandler,
+  dragEnterHandler,
+} from './draggableElements.js';
 
 let playerOne = null;
 let playerTwo = null;
 let leftType = null;
 let rightType = null;
-let rightBoard = document.getElementById('right-board');
-let leftBoard = document.getElementById('left-board');
+let rightBoard = document.getElementById('right-player-container');
+let leftBoard = document.getElementById('left-player-container');
 const result = document.getElementById('result');
 const randomizeBtn = document.getElementById('randomize');
 const submitBtn = document.getElementById('submit-btn');
+let playerParams = document.getElementById('player-params-container');
 let isRunning = false;
 
 async function handleTileClick(e, player) {
@@ -28,7 +35,7 @@ async function handleTileClick(e, player) {
   refreshPlayerBoard(player);
 
   if (gameboard.areAllShipsSunk()) {
-    handleGameEnd(oppositePlayer.name);
+    handleGameEnd(oppositePlayer);
     return;
   }
 
@@ -37,7 +44,7 @@ async function handleTileClick(e, player) {
     await handleCpuPlay(playerTwo);
 
     if (oppositePlayer.gameboard.areAllShipsSunk()) {
-      handleGameEnd(player.name);
+      handleGameEnd(player);
       return;
     }
     rightBoard.classList.toggle('pointer-events-disabled', false);
@@ -58,11 +65,29 @@ async function handleCpuPlay(player) {
   }
 }
 
-function handleGameEnd(name) {
+function handleGameEnd(player) {
   document.querySelectorAll('.board').forEach((board) => {
     board.classList.toggle('pointer-events-disabled', true);
   });
-  result.textContent = `${name} won`;
+  result.textContent = `${player.name} won`;
+
+  const homeBtn = document.createElement('button');
+  homeBtn.id = 'home-btn';
+  homeBtn.textContent = 'Home';
+  result.appendChild(homeBtn);
+  homeBtn.addEventListener('click', () => handleHomeBtn(homeBtn));
+  isRunning = false;
+}
+
+function handleHomeBtn(btn) {
+  playerOne = null;
+  playerTwo = null;
+  leftType = null;
+  rightType = null;
+  playerParams.innerHTML = '';
+  result.textContent = '';
+  btn.classList.toggle('hidden', true);
+  setPage(0);
 }
 
 function startGame() {
@@ -78,6 +103,8 @@ function startGame() {
     .getElementById('pre-game-controls-container')
     .classList.toggle('hidden', true);
   rightBoard.classList.toggle('pointer-events-disabled', false);
+  refreshPlayerBoard(playerOne);
+  refreshPlayerBoard(playerTwo);
 }
 
 function refreshPage() {
@@ -103,7 +130,6 @@ document.querySelectorAll('.vs').forEach((option) => {
     const element = e.currentTarget;
     leftType = element.getAttribute('data-left-type');
     rightType = element.getAttribute('data-right-type');
-    let playerParams = document.getElementById('player-params-container');
     playerParams.appendChild(createPlayerInput(leftType, 'left'));
     playerParams.appendChild(createPlayerInput(rightType, 'right'));
     refreshPage();
@@ -152,8 +178,19 @@ function refreshPlayerBoard(player) {
   let boardElement = document.getElementById(player.boardId);
   boardElement.innerHTML = '';
   boardElement.appendChild(buildBoard(player));
-  boardElement.appendChild(shipsBoardDisplay(player.side));
-  displayHitShip(player);
+  let miniShipsContainer = document.getElementById(
+    `${player.side}-mini-ships-container`
+  );
+  if (isRunning) {
+    boardElement.innerHTML = '';
+    boardElement.appendChild(buildBoard(player));
+    miniShipsContainer.innerHTML = '';
+    miniShipsContainer.appendChild(shipsBoardDisplay(player.side));
+    displayHitShip(player);
+  } else if (!isRunning && player.side === 'left' && player.type === 'human') {
+    miniShipsContainer.innerHTML = '';
+    miniShipsContainer.appendChild(buildDraggableShips(player));
+  }
 
   if (player.side === 'right' && player.type === 'cpu') {
     rightBoard.querySelectorAll('.tile').forEach((tile) => {
@@ -161,6 +198,16 @@ function refreshPlayerBoard(player) {
         handleTileClick(e, player);
       });
       tile.classList.toggle('ship', false);
+    });
+  }
+
+  if (player.side === 'left' && player.type === 'human' && !isRunning) {
+    leftBoard.querySelectorAll('.tile').forEach((tile) => {
+      tile.ondragover = dragOverHandler;
+      tile.addEventListener('drop', (e) =>
+        dropHandler(e, player, refreshPlayerBoard)
+      );
+      tile.addEventListener('dragenter', (e) => dragEnterHandler(e, player));
     });
   }
 }
@@ -201,10 +248,7 @@ function handleCpuVsCpuGame() {
       refreshPlayerBoard(currentPlayer);
 
       if (currentPlayer.gameboard.areAllShipsSunk()) {
-        document.querySelectorAll('.board').forEach((board) => {
-          board.classList.toggle('pointer-events-disabled', true);
-        });
-        result.textContent = `${oppositePlayer.name} won`;
+        handleGameEnd(oppositePlayer);
         return;
       }
       isRunning = !currentPlayer.gameboard.areAllShipsSunk();
