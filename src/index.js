@@ -174,7 +174,7 @@ submitBtn.addEventListener('click', () => {
   }
 });
 
-function refreshPlayerBoard(player) {
+export function refreshPlayerBoard(player) {
   let boardElement = document.getElementById(player.boardId);
   boardElement.innerHTML = '';
   boardElement.appendChild(buildBoard(player));

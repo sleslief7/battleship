@@ -1,5 +1,6 @@
 import { SHIP_MODELS } from './constants.js';
 import Ship from './models/ship.js';
+import { refreshPlayerBoard } from './index.js';
 
 let dragIndex = null;
 let direction = 'horizontal';
@@ -15,6 +16,7 @@ export function buildDraggableShips(player) {
   let rotateBtn = document.createElement('button');
   rotateBtn.textContent = 'Rotate Ships';
   rotateBtn.classList.add('btn');
+  rotateBtn.id = 'rotate-ships-btn';
 
   SHIP_MODELS.forEach((ship) => {
     if (player.gameboard.ships.some((x) => x.name === ship.name)) return;
@@ -32,10 +34,17 @@ export function buildDraggableShips(player) {
       shipBox.classList.add('ship-box');
       shipBox.setAttribute('data-index', i);
       shipContainer.appendChild(shipBox);
+      if (direction === 'horizontal') {
+        shipContainer.style.flexDirection = 'row';
+        draggableShipsContainer.style.flexDirection = 'column';
+      } else {
+        shipContainer.style.flexDirection = 'column';
+        draggableShipsContainer.style.flexDirection = 'row';
+      }
     }
     draggableShipsContainer.appendChild(shipContainer);
   });
-  rotateBtn.addEventListener('click', handleRotateShipsBtn);
+  rotateBtn.addEventListener('click', () => handleRotateShipsBtn());
   resetShipsBtn.addEventListener('click', () => handleResetShipsBtn(player));
 
   draggableShipsContainer.appendChild(resetShipsBtn);
@@ -44,11 +53,16 @@ export function buildDraggableShips(player) {
   return draggableShipsContainer;
 }
 
-function handleResetShipsBtn(player) {}
+function handleResetShipsBtn(player) {
+  player.gameboard.resetBoard();
+  refreshPlayerBoard(player);
+}
 
 function handleRotateShipsBtn() {
   let ships = document.querySelectorAll('.draggable-ship');
   let shipsContainer = document.getElementById('draggable-ships-container');
+
+  if (ships.length === 0) return;
 
   if (direction === 'horizontal') {
     ships.forEach((ship) => {
@@ -76,7 +90,6 @@ function onDragStartHandler(e) {
   const size = isHorizontal ? offsetWidth : offsetHeight;
 
   dragIndex = Math.floor((mouse - start) / (size / length));
-  console.log(mouse, start, size, length, dragIndex);
   dragShipId = id;
   e.dataTransfer.setData('text', id);
 }
@@ -139,9 +152,10 @@ export function dropHandler(e, player, refreshPlayerBoard) {
   const ship = new Ship(length, dragShipId, direction);
   const { x, y } = buildXAndY(e.target, isH);
   if (gb.canPlaceShip(ship, x, y)) {
+    let rotateBtn = document.getElementById('rotate-ships-btn');
     gb.placeShip(ship, x, y);
     refreshPlayerBoard(player);
-    direction = 'horizontal';
+    if (gb.ships === SHIP_MODELS.length) rotateBtn.style.pointerEvents = 'none';
   }
 
   dragShipTiles.forEach((element) => {
