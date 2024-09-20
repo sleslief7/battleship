@@ -1,0 +1,15 @@
+.carrier {
+  background-image: url('../assets/carrier.png');
+}
+.battleship {
+  background-image: url('../assets/battleship.png');
+}
+.cruiser {
+  background-image: url('../assets/cruiser.png');
+}
+.submarine {
+  background-image: url('../assets/submarine.png');
+}
+.destroyer {
+  background-image: url('../assets/destroyer.png');
+}

@@ -17,6 +17,7 @@ export function buildDraggableShips(player) {
   rotateBtn.textContent = 'Rotate Ships';
   rotateBtn.classList.add('btn');
   rotateBtn.id = 'rotate-ships-btn';
+  let isH = direction === 'horizontal';
 
   SHIP_MODELS.forEach((ship) => {
     if (player.gameboard.ships.some((x) => x.name === ship.name)) return;
@@ -29,21 +30,19 @@ export function buildDraggableShips(player) {
     shipContainer.ondragstart = onDragStartHandler;
     shipContainer.ondragend = onDragEndHandler;
 
-    for (let i = 0; i < ship.length; i++) {
-      let shipBox = document.createElement('div');
-      shipBox.classList.add('ship-box');
-      shipBox.setAttribute('data-index', i);
-      shipContainer.appendChild(shipBox);
-      if (direction === 'horizontal') {
-        shipContainer.style.flexDirection = 'row';
-        draggableShipsContainer.style.flexDirection = 'column';
-      } else {
-        shipContainer.style.flexDirection = 'column';
-        draggableShipsContainer.style.flexDirection = 'row';
-      }
-    }
+    shipContainer.classList.add(ship.name.toLowerCase());
+
+    const pixels = 48;
+    const width = isH ? ship.length * pixels : pixels;
+    const height = !isH ? ship.length * pixels : pixels;
+    shipContainer.style.width = `${width}px`;
+    shipContainer.style.height = `${height}px`;
+
     draggableShipsContainer.appendChild(shipContainer);
   });
+
+  draggableShipsContainer.style.flexDirection = isH ? 'column' : 'row';
+
   rotateBtn.addEventListener('click', () => handleRotateShipsBtn());
   resetShipsBtn.addEventListener('click', () => handleResetShipsBtn(player));
 

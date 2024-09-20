@@ -1,4 +1,5 @@
 import './css/styles.css';
+import './css/battleships.css';
 import Player from './models/player.js';
 import { buildBoard } from './dom.js';
 import { SHIP_MODELS } from './constants.js';
@@ -11,10 +12,10 @@ import {
   dragEnterHandler,
 } from './draggableElements.js';
 
-let playerOne = null;
-let playerTwo = null;
-let leftType = null;
-let rightType = null;
+let playerOne = Player.fromJSON(localStorage.getItem('playerOne'));
+let playerTwo = Player.fromJSON(localStorage.getItem('playerTwo'));
+let leftType = localStorage.getItem('leftType');
+let rightType = localStorage.getItem('rightType');
 let rightBoard = document.getElementById('right-player-container');
 let leftBoard = document.getElementById('left-player-container');
 const result = document.getElementById('result');
@@ -22,6 +23,11 @@ const randomizeBtn = document.getElementById('randomize');
 const submitBtn = document.getElementById('submit-btn');
 let playerParams = document.getElementById('player-params-container');
 let isRunning = false;
+const homeBtn = document.createElement('button');
+homeBtn.id = 'home-btn';
+homeBtn.textContent = 'Home';
+let gamePage = document.getElementById('game-page');
+gamePage.appendChild(homeBtn);
 
 async function handleTileClick(e, player) {
   const { gameboard } = player;
@@ -70,35 +76,27 @@ function handleGameEnd(player) {
     board.classList.toggle('pointer-events-disabled', true);
   });
   result.textContent = `${player.name} won`;
-
-  const homeBtn = document.createElement('button');
-  homeBtn.id = 'home-btn';
-  homeBtn.textContent = 'Home';
-  result.appendChild(homeBtn);
-  homeBtn.addEventListener('click', () => handleHomeBtn(homeBtn));
   isRunning = false;
 }
 
 function handleHomeBtn(btn) {
   let miniShipsContainerOne = document.getElementById(
-    `${playerOne.side}-mini-ships-container`
+    `left-mini-ships-container`
   );
   let miniShipsContainerTwo = document.getElementById(
-    `${playerTwo.side}-mini-ships-container`
+    `right-mini-ships-container`
   );
   miniShipsContainerOne.innerHTML = '';
   miniShipsContainerTwo.innerHTML = '';
-  playerOne = null;
-  playerTwo = null;
-  leftType = null;
-  rightType = null;
   playerParams.innerHTML = '';
   rightBoard.innerHTML = '';
   result.textContent = '';
+  playerOne = playerTwo = leftType = rightType = null;
   btn.classList.toggle('hidden', true);
   setPage(0);
   document.getElementById('player-two').textContent = '';
   isRunning = false;
+  localStorage.clear();
 }
 
 function startGame() {
@@ -113,12 +111,14 @@ function startGame() {
     .getElementById('pre-game-controls-container')
     .classList.toggle('hidden', true);
   rightBoard.classList.toggle('pointer-events-disabled', false);
+  homeBtn.classList.toggle('hidden', true);
   refreshPlayerBoard(playerOne);
   refreshPlayerBoard(playerTwo);
 }
 
 function refreshPage() {
   if (leftType === null || rightType === null) setPage(0);
+  else if (playerOne && playerTwo) setPage(2);
   else if (leftType && rightType) setPage(1);
   else setPage(2);
 }
@@ -132,6 +132,14 @@ function setPage(i) {
   pageIds.forEach((pId) =>
     document.getElementById(pId).classList.toggle('hidden', true)
   );
+  if (i === 1) {
+    playerParams.innerHTML = '';
+    playerParams.appendChild(createPlayerInput(leftType, 'left'));
+    playerParams.appendChild(createPlayerInput(rightType, 'right'));
+  } else if (i === 2) {
+    LoadGamePageContent();
+    homeBtn.classList.toggle('hidden', false);
+  }
   document.getElementById(pageIds[i]).classList.toggle('hidden', false);
 }
 
@@ -140,15 +148,13 @@ document.querySelectorAll('.vs').forEach((option) => {
     const element = e.currentTarget;
     leftType = element.getAttribute('data-left-type');
     rightType = element.getAttribute('data-right-type');
-    playerParams.appendChild(createPlayerInput(leftType, 'left'));
-    playerParams.appendChild(createPlayerInput(rightType, 'right'));
+    localStorage.setItem('leftType', leftType);
+    localStorage.setItem('rightType', rightType);
     refreshPage();
   });
 });
 
 submitBtn.addEventListener('click', () => {
-  setPage(2);
-
   let leftName = document.getElementById('left-name')?.value;
   let rightName = document.getElementById('right-name')?.value;
   let leftDifficulty = document.getElementById('left-difficulty')?.value;
@@ -156,33 +162,32 @@ submitBtn.addEventListener('click', () => {
 
   playerOne = new Player(leftType, leftName, leftDifficulty, 'left');
   playerTwo = new Player(rightType, rightName, rightDifficulty, 'right');
+  localStorage.setItem('playerOne', JSON.stringify(playerOne));
+  localStorage.setItem('playerTwo', JSON.stringify(playerTwo));
 
+  setPage(2);
+});
+
+randomizeBtn.addEventListener('click', () => {
+  if (!playerOne) return;
+  playerOne.gameboard.placeShipsRandomly();
+  refreshPlayerBoard(playerOne);
+});
+
+function LoadGamePageContent() {
   if (leftType === 'human' && rightType === 'cpu') {
-    playerOne.name = leftName ? leftName : 'Human';
-    playerTwo.name = 'CPU';
-    displayNames();
     handleHumanVsCpuGame();
   } else if (playerOne.type === 'cpu' && playerTwo.type === 'cpu') {
-    playerOne.name = 'CPU One';
-    playerTwo.name = 'CPU Two';
-    displayNames();
     handleCpuVsCpuGame();
-  } else {
-    playerOne.name = leftName ? leftName : 'Human One';
-    playerTwo.name = rightName ? rightName : 'Human Two';
-    displayNames();
   }
+  displayNames();
 
   if (playerOne.type === 'human' && !isRunning) {
     document
       .getElementById('pre-game-controls-container')
       .classList.toggle('hidden', false);
-    randomizeBtn.addEventListener('click', () => {
-      playerOne.gameboard.placeShipsRandomly();
-      refreshPlayerBoard(playerOne);
-    });
   }
-});
+}
 
 export function refreshPlayerBoard(player) {
   let boardElement = document.getElementById(player.boardId);
@@ -300,3 +305,4 @@ function placePlayerShips(player) {
 
 document.getElementById('start-game').onclick = startGame;
 refreshPage();
+homeBtn.addEventListener('click', () => handleHomeBtn(homeBtn));
