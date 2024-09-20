@@ -205,8 +205,7 @@ export function refreshPlayerBoard(player) {
     miniShipsContainer.appendChild(shipsBoardDisplay(player.side));
     displayHitShip(player);
   } else if (!isRunning && player.side === 'left' && player.type === 'human') {
-    miniShipsContainer.innerHTML = '';
-    miniShipsContainer.appendChild(buildDraggableShips(player));
+    buildDraggableShips(player);
   } else if (
     !isRunning &&
     player.type === 'cpu' &&

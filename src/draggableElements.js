@@ -3,53 +3,55 @@ import Ship from './models/ship.js';
 import { refreshPlayerBoard } from './index.js';
 
 let dragIndex = null;
-let direction = 'horizontal';
+let isH = true;
 let dragShipId = null;
 let dragShipTiles = [];
+const pixels = 48;
 
 export function buildDraggableShips(player) {
-  let draggableShipsContainer = document.createElement('div');
-  draggableShipsContainer.id = 'draggable-ships-container';
+  const boardBuilderControls = document.getElementById(
+    `${player.side}-mini-ships-container`
+  );
+  boardBuilderControls.innerHTML = '';
+
   let resetShipsBtn = document.createElement('button');
+  let rotateBtn = document.createElement('button');
   resetShipsBtn.textContent = 'Reset Ships Position';
   resetShipsBtn.classList.add('btn');
-  let rotateBtn = document.createElement('button');
   rotateBtn.textContent = 'Rotate Ships';
   rotateBtn.classList.add('btn');
   rotateBtn.id = 'rotate-ships-btn';
-  let isH = direction === 'horizontal';
+  rotateBtn.addEventListener('click', () => handleRotateShipsBtn(player));
+  resetShipsBtn.addEventListener('click', () => handleResetShipsBtn(player));
 
+  let shipsContainer = document.createElement('div');
+  shipsContainer.id = 'draggable-ships-container';
+  shipsContainer.style.flexDirection = isH ? 'column' : 'row';
   SHIP_MODELS.forEach((ship) => {
     if (player.gameboard.ships.some((x) => x.name === ship.name)) return;
 
-    let shipContainer = document.createElement('div');
-    shipContainer.classList.add('draggable-ship');
-    shipContainer.id = ship.name;
-    shipContainer.draggable = true;
+    let draggableShip = document.createElement('div');
+    draggableShip.ondragstart = onDragStartHandler;
+    draggableShip.ondragend = onDragEndHandler;
+    draggableShip.classList.add('draggable-ship');
+    draggableShip.id = ship.name;
+    draggableShip.draggable = true;
 
-    shipContainer.ondragstart = onDragStartHandler;
-    shipContainer.ondragend = onDragEndHandler;
+    let shipClass = ship.name.toLowerCase();
+    if (!isH) shipClass = `rotated-${shipClass}`;
+    draggableShip.classList.add(shipClass);
 
-    shipContainer.classList.add(ship.name.toLowerCase());
-
-    const pixels = 48;
     const width = isH ? ship.length * pixels : pixels;
     const height = !isH ? ship.length * pixels : pixels;
-    shipContainer.style.width = `${width}px`;
-    shipContainer.style.height = `${height}px`;
+    draggableShip.style.width = `${width}px`;
+    draggableShip.style.height = `${height}px`;
 
-    draggableShipsContainer.appendChild(shipContainer);
+    shipsContainer.appendChild(draggableShip);
   });
 
-  draggableShipsContainer.style.flexDirection = isH ? 'column' : 'row';
-
-  rotateBtn.addEventListener('click', () => handleRotateShipsBtn());
-  resetShipsBtn.addEventListener('click', () => handleResetShipsBtn(player));
-
-  draggableShipsContainer.appendChild(resetShipsBtn);
-  draggableShipsContainer.appendChild(rotateBtn);
-
-  return draggableShipsContainer;
+  boardBuilderControls.appendChild(shipsContainer);
+  boardBuilderControls.appendChild(resetShipsBtn);
+  boardBuilderControls.appendChild(rotateBtn);
 }
 
 function handleResetShipsBtn(player) {
@@ -57,36 +59,19 @@ function handleResetShipsBtn(player) {
   refreshPlayerBoard(player);
 }
 
-function handleRotateShipsBtn() {
-  let ships = document.querySelectorAll('.draggable-ship');
-  let shipsContainer = document.getElementById('draggable-ships-container');
-
-  if (ships.length === 0) return;
-
-  if (direction === 'horizontal') {
-    ships.forEach((ship) => {
-      ship.style.flexDirection = 'column';
-    });
-    shipsContainer.style.flexDirection = 'row';
-    direction = 'vertical';
-  } else {
-    ships.forEach((ship) => {
-      ship.style.flexDirection = 'row';
-    });
-    shipsContainer.style.flexDirection = 'column';
-    direction = 'horizontal';
-  }
+function handleRotateShipsBtn(player) {
+  isH = !isH;
+  buildDraggableShips(player);
 }
 
 function onDragStartHandler(e) {
   const { id, offsetLeft, offsetWidth, offsetHeight } = e.target;
 
   const offsetTop = getDistanceFromTop(e.target);
-  const isHorizontal = direction === 'horizontal';
   const length = SHIP_MODELS.find((x) => x.name === id).length;
-  const mouse = isHorizontal ? e.clientX : e.clientY;
-  const start = isHorizontal ? offsetLeft : offsetTop;
-  const size = isHorizontal ? offsetWidth : offsetHeight;
+  const mouse = isH ? e.clientX : e.clientY;
+  const start = isH ? offsetLeft : offsetTop;
+  const size = isH ? offsetWidth : offsetHeight;
 
   dragIndex = Math.floor((mouse - start) / (size / length));
   dragShipId = id;
@@ -114,9 +99,8 @@ function buildXAndY(tile, isH) {
 export function dragEnterHandler(e, player) {
   e.preventDefault();
   const { gameboard: gb } = player;
-  const isH = direction === 'horizontal';
   const length = SHIP_MODELS.find((x) => x.name === dragShipId).length;
-  const ship = new Ship(length, dragShipId, direction);
+  const ship = new Ship(length, dragShipId, isH ? 'horizontal' : 'vertical');
   const { x, y } = buildXAndY(e.target, isH);
   const hoverClass = gb.canPlaceShip(ship, x, y) ? 'can-drop' : 'can-not-drop';
 
@@ -146,9 +130,8 @@ export function dragEnterHandler(e, player) {
 export function dropHandler(e, player, refreshPlayerBoard) {
   e.preventDefault();
   const { gameboard: gb } = player;
-  const isH = direction === 'horizontal';
   const length = SHIP_MODELS.find((x) => x.name === dragShipId).length;
-  const ship = new Ship(length, dragShipId, direction);
+  const ship = new Ship(length, dragShipId, isH ? 'horizontal' : 'vertical');
   const { x, y } = buildXAndY(e.target, isH);
   if (gb.canPlaceShip(ship, x, y)) {
     let rotateBtn = document.getElementById('rotate-ships-btn');

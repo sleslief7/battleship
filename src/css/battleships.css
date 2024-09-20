@@ -13,3 +13,18 @@
 .destroyer {
   background-image: url('../assets/destroyer.png');
 }
+.rotated-carrier {
+  background-image: url('../assets/rotated-carrier.png');
+}
+.rotated-battleship {
+  background-image: url('../assets/rotated-battleship.png');
+}
+.rotated-cruiser {
+  background-image: url('../assets/rotated-cruiser.png');
+}
+.rotated-submarine {
+  background-image: url('../assets/rotated-submarine.png');
+}
+.rotated-destroyer {
+  background-image: url('../assets/rotated-destroyer.png');
+}
