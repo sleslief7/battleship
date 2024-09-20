@@ -80,25 +80,35 @@ function handleGameEnd(player) {
 }
 
 function handleHomeBtn(btn) {
+  let miniShipsContainerOne = document.getElementById(
+    `${playerOne.side}-mini-ships-container`
+  );
+  let miniShipsContainerTwo = document.getElementById(
+    `${playerTwo.side}-mini-ships-container`
+  );
+  miniShipsContainerOne.innerHTML = '';
+  miniShipsContainerTwo.innerHTML = '';
   playerOne = null;
   playerTwo = null;
   leftType = null;
   rightType = null;
   playerParams.innerHTML = '';
+  rightBoard.innerHTML = '';
   result.textContent = '';
   btn.classList.toggle('hidden', true);
   setPage(0);
+  document.getElementById('player-two').textContent = '';
+  isRunning = false;
 }
 
 function startGame() {
-  if (
-    playerOne.gameboard.ships.length !== SHIP_MODELS.length ||
-    playerTwo.gameboard.ships.length !== SHIP_MODELS.length
-  ) {
+  if (playerOne.gameboard.ships.length !== SHIP_MODELS.length) {
     alert(`You must place ${SHIP_MODELS.length} ships!`);
     return;
   }
   isRunning = true;
+  placePlayerShips(playerTwo);
+  displayNames();
   document
     .getElementById('pre-game-controls-container')
     .classList.toggle('hidden', true);
@@ -181,6 +191,8 @@ export function refreshPlayerBoard(player) {
   let miniShipsContainer = document.getElementById(
     `${player.side}-mini-ships-container`
   );
+  let oppositePlayer = player.name === playerOne.name ? playerTwo : playerOne;
+
   if (isRunning) {
     boardElement.innerHTML = '';
     boardElement.appendChild(buildBoard(player));
@@ -190,6 +202,13 @@ export function refreshPlayerBoard(player) {
   } else if (!isRunning && player.side === 'left' && player.type === 'human') {
     miniShipsContainer.innerHTML = '';
     miniShipsContainer.appendChild(buildDraggableShips(player));
+  } else if (
+    !isRunning &&
+    player.type === 'cpu' &&
+    oppositePlayer.type === 'cpu'
+  ) {
+    miniShipsContainer.innerHTML = '';
+    miniShipsContainer.appendChild(shipsBoardDisplay(player.side));
   }
 
   if (player.side === 'right' && player.type === 'cpu') {
@@ -213,13 +232,30 @@ export function refreshPlayerBoard(player) {
 }
 
 function displayNames() {
-  document.getElementById('player-one').textContent = playerOne.name;
-  document.getElementById('player-two').textContent = playerTwo.name;
+  let playerOneTitle = document.getElementById('player-one');
+  let playerTwoTitle = document.getElementById('player-two');
+  playerOneTitle.textContent = '';
+  playerTwoTitle.textContent = '';
+  playerOneTitle.textContent = playerOne.name;
+  if (
+    isRunning ||
+    (isRunning && playerTwo.type === 'cpu') ||
+    (!isRunning && playerOne.type === 'cpu')
+  ) {
+    playerTwoTitle.textContent = playerTwo.name;
+  }
 }
 
 function handleHumanVsCpuGame() {
   refreshPlayerBoard(playerOne);
-  placePlayerShips(playerTwo);
+  let preGameControls = document.getElementById('pre-game-controls-container');
+  preGameControls.classList.toggle('hidden', false);
+  preGameControls.querySelectorAll('button').forEach((button) => {
+    button.classList.toggle('hidden', true);
+  });
+  let startGameBtn = document.getElementById('start-game');
+  startGameBtn.classList.toggle('hidden', false);
+  randomizeBtn.classList.toggle('hidden', false);
 }
 function handleCpuVsCpuGame() {
   placePlayerShips(playerOne);
