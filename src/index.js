@@ -3,7 +3,6 @@ import './css/battleships.css';
 import Player from './models/player.js';
 import { buildBoard } from './dom.js';
 import { SHIP_MODELS } from './constants.js';
-import { createPlayerInput } from './createPlayerInfoScreen.js';
 import { shipsBoardDisplay, displayHitShip } from './shipsBoard.js';
 import {
   buildDraggableShips,
@@ -20,21 +19,14 @@ let rightBoard = document.getElementById('right-player-container');
 let leftBoard = document.getElementById('left-player-container');
 const result = document.getElementById('result');
 const randomizeBtn = document.getElementById('randomize');
-const submitBtn = document.getElementById('submit-btn');
-let playerParams = document.getElementById('player-params-container');
+const homeBtn = document.getElementById('home-btn');
 let isRunning = false;
-const homeBtn = document.createElement('button');
-homeBtn.id = 'home-btn';
-homeBtn.textContent = 'Home';
-let gamePage = document.getElementById('game-page');
-gamePage.appendChild(homeBtn);
 
 async function handleTileClick(e, player) {
   const { gameboard } = player;
   const tile = e.currentTarget;
   const x = tile.getAttribute('data-x');
   const y = tile.getAttribute('data-y');
-  const ship = gameboard.board[x][y];
   let oppositePlayer = player.name === playerOne.name ? playerTwo : playerOne;
 
   let play = gameboard.receiveAttack(x, y);
@@ -88,15 +80,14 @@ function handleHomeBtn(btn) {
   );
   miniShipsContainerOne.innerHTML = '';
   miniShipsContainerTwo.innerHTML = '';
-  playerParams.innerHTML = '';
   rightBoard.innerHTML = '';
   result.textContent = '';
   playerOne = playerTwo = leftType = rightType = null;
   btn.classList.toggle('hidden', true);
-  setPage(0);
   document.getElementById('player-two').textContent = '';
   isRunning = false;
   localStorage.clear();
+  refreshPage();
 }
 
 function startGame() {
@@ -111,32 +102,25 @@ function startGame() {
     .getElementById('pre-game-controls-container')
     .classList.toggle('hidden', true);
   rightBoard.classList.toggle('pointer-events-disabled', false);
-  homeBtn.classList.toggle('hidden', true);
   refreshPlayerBoard(playerOne);
   refreshPlayerBoard(playerTwo);
 }
 
 function refreshPage() {
-  if (leftType === null || rightType === null) setPage(0);
-  else if (playerOne && playerTwo) setPage(2);
-  else if (leftType && rightType) setPage(1);
-  else setPage(2);
+  if (playerOne && playerTwo) {
+    setPage(1);
+  } else {
+    setPage(0);
+  }
 }
 
 function setPage(i) {
-  let pageIds = [
-    'player-type-selection-container',
-    'player-details-page',
-    'game-page',
-  ];
+  let pageIds = ['player-type-selection-container', 'game-page'];
   pageIds.forEach((pId) =>
     document.getElementById(pId).classList.toggle('hidden', true)
   );
-  if (i === 1) {
-    playerParams.innerHTML = '';
-    playerParams.appendChild(createPlayerInput(leftType, 'left'));
-    playerParams.appendChild(createPlayerInput(rightType, 'right'));
-  } else if (i === 2) {
+  if (i == -1) {
+  } else if (i === 1) {
     LoadGamePageContent();
     homeBtn.classList.toggle('hidden', false);
   }
@@ -145,27 +129,36 @@ function setPage(i) {
 
 document.querySelectorAll('.vs').forEach((option) => {
   option.addEventListener('click', (e) => {
-    const element = e.currentTarget;
-    leftType = element.getAttribute('data-left-type');
-    rightType = element.getAttribute('data-right-type');
+    const el = e.currentTarget;
+    leftType = el.getAttribute('data-left-type');
+    rightType = el.getAttribute('data-right-type');
     localStorage.setItem('leftType', leftType);
     localStorage.setItem('rightType', rightType);
-    refreshPage();
+
+    el.classList.toggle('expanded-vs', true);
+    el.classList.toggle('hidden-vs', false);
+    document.querySelectorAll(`.vs:not(#${el.id})`).forEach((x) => {
+      x.classList.toggle('expanded-vs', false);
+      x.classList.toggle('hidden-vs', true);
+    });
   });
 });
 
-submitBtn.addEventListener('click', () => {
-  let leftName = document.getElementById('left-name')?.value;
-  let rightName = document.getElementById('right-name')?.value;
-  let leftDifficulty = document.getElementById('left-difficulty')?.value;
-  let rightDifficulty = document.getElementById('right-difficulty')?.value;
+document.querySelectorAll('.play-btn').forEach((x) => {
+  x.addEventListener('click', (e) => {
+    let vs = document.querySelector('.vs.expanded-vs');
+    let leftName = vs.querySelector('.left-name')?.value ?? null;
+    let rightName = vs.querySelector('.right-name')?.value ?? null;
+    let leftDifficulty = vs.querySelector('.left-difficulty')?.value ?? null;
+    let rightDifficulty = vs.querySelector('.right-difficulty')?.value ?? null;
 
-  playerOne = new Player(leftType, leftName, leftDifficulty, 'left');
-  playerTwo = new Player(rightType, rightName, rightDifficulty, 'right');
-  localStorage.setItem('playerOne', JSON.stringify(playerOne));
-  localStorage.setItem('playerTwo', JSON.stringify(playerTwo));
+    playerOne = new Player(leftType, leftName, leftDifficulty, 'left');
+    playerTwo = new Player(rightType, rightName, rightDifficulty, 'right');
+    localStorage.setItem('playerOne', JSON.stringify(playerOne));
+    localStorage.setItem('playerTwo', JSON.stringify(playerTwo));
 
-  setPage(2);
+    refreshPage();
+  });
 });
 
 randomizeBtn.addEventListener('click', () => {

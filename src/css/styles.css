@@ -11,10 +11,23 @@ body {
   color: rgb(237, 230, 230);
 }
 
+header {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+}
+
+#home-btn {
+  font-size: 2rem;
+  justify-self: start;
+}
+
 h1 {
   text-align: center;
   font-weight: 800;
-  font-size: 4rem;
+  font-size: 3.8rem;
+  justify-self: start;
 }
 
 #boards-container {
@@ -24,8 +37,8 @@ h1 {
 }
 
 .board {
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 400px;
   display: grid;
   gap: 1px;
 }
@@ -66,6 +79,7 @@ h1 {
   justify-content: center;
   height: 60vh;
   font-size: 1.5rem;
+  transition: all 0.5s ease;
 }
 
 .vs {
@@ -77,13 +91,80 @@ h1 {
   cursor: pointer;
   font-weight: 900;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  transition: width 0.5s ease, height 0.5s ease, background-color 0.3s ease;
 }
 
-.vs:hover {
+.expanded-vs {
+  width: 450px;
+  height: 280px;
+  cursor: auto;
+}
+
+.hidden-vs {
+  opacity: 0.5;
+}
+
+.vs-input-group input {
+  width: 25%;
+}
+.vs-input-group select {
+  width: 30%;
+}
+
+.vs-input-group {
+  padding-top: 20px;
+}
+
+.vs .vs-input-group {
+  opacity: 0;
+  pointer-events: none;
+  height: 0px;
+}
+
+.expanded-vs .vs-input-group {
+  opacity: 1;
+  transition: all 0.5s ease-in;
+  transition-delay: 0.5s;
+  pointer-events: all;
+}
+
+.vs-input-group,
+.vs-icons-group {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.expanded-vs .human,
+.expanded-vs .cpu {
+  font-size: 5.4rem;
+}
+
+.expanded-vs .lightning {
+  font-size: 2.44rem;
+}
+
+.play-btn {
+  font-size: 2rem;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.play-btn:hover {
+  cursor: pointer;
+  color: rgb(241, 255, 240);
+}
+
+.play-btn:focus {
+  color: white;
+}
+
+.vs:hover:not(.expanded-vs) {
   background-color: rgb(20, 40, 35);
 }
 
@@ -91,55 +172,15 @@ h1 {
   display: none !important;
 }
 
-#player-details-page {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: first baseline;
-  font-size: 2rem;
-}
-#player-info-container {
-  margin-top: 100px;
-  border: 2px solid white;
-  padding: 20px 30px;
-  border-radius: 10px;
-  display: flex;
-  gap: 10px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
 input[type='text'] {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  font-family: DMSans, sans-serif;
 }
 
 select {
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-#player-params-container {
-  text-align: center;
-}
-
-#submit-btn,
-#home-btn {
   font-size: 1.2rem;
-  padding: 5px 10px;
-  border-radius: 5px;
   cursor: pointer;
-  border: 2px solid black;
-}
-
-#submit-btn:hover,
-.pre-game-btns:hover,
-#home-btn:hover,
-.btn:hover {
-  color: white;
-  background-color: black;
-  border: 2px solid white;
+  font-family: DMSans, sans-serif;
 }
 
 #pre-game-controls-container {
@@ -214,22 +255,35 @@ select {
   display: flex;
   flex-direction: column;
 }
-#home-btn {
-  cursor: pointer;
-  width: 100px;
-  height: 50px;
-}
 
 .human,
 .cpu {
   font-size: 2.8rem;
 }
 
+.human,
+.cpu,
+.lightning {
+  transition: font-size 0.5s ease;
+}
+
 .btn {
+  font-family: DMSans, sans-serif;
   width: fit-content;
   height: fit-content;
   padding: 5px 10px;
   cursor: pointer;
+  border: 1px solid white;
+  border-radius: 4px;
+  background-color: rgb(0, 7, 22);
+  color: white;
+}
+
+.pre-game-btns:hover,
+#home-btn:hover,
+.btn:hover {
+  background-color: rgb(192, 203, 228);
+  color: rgb(33, 33, 33);
 }
 
 .can-drop {

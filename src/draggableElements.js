@@ -16,9 +16,9 @@ export function buildDraggableShips(player) {
 
   let resetShipsBtn = document.createElement('button');
   let rotateBtn = document.createElement('button');
-  resetShipsBtn.textContent = 'Reset Ships Position';
+  resetShipsBtn.textContent = 'Reset';
   resetShipsBtn.classList.add('btn');
-  rotateBtn.textContent = 'Rotate Ships';
+  rotateBtn.textContent = 'Rotate';
   rotateBtn.classList.add('btn');
   rotateBtn.id = 'rotate-ships-btn';
   rotateBtn.addEventListener('click', () => handleRotateShipsBtn(player));
