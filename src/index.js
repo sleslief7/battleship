@@ -27,7 +27,7 @@ async function handleTileClick(e, player) {
   const tile = e.currentTarget;
   const x = tile.getAttribute('data-x');
   const y = tile.getAttribute('data-y');
-  let oppositePlayer = player.name === playerOne.name ? playerTwo : playerOne;
+  let oppositePlayer = player.side === playerOne.side ? playerTwo : playerOne;
 
   let play = gameboard.receiveAttack(x, y);
   refreshPlayerBoard(player);
@@ -39,7 +39,7 @@ async function handleTileClick(e, player) {
 
   if (play === null) {
     rightBoard.classList.toggle('pointer-events-disabled', true);
-    await handleCpuPlay(playerTwo);
+    await handleCpuPlay(oppositePlayer);
 
     if (oppositePlayer.gameboard.areAllShipsSunk()) {
       handleGameEnd(player);
@@ -50,15 +50,14 @@ async function handleTileClick(e, player) {
 }
 
 async function handleCpuPlay(player) {
-  let oppositePlayer = player.name === playerOne.name ? playerTwo : playerOne;
   let play = true;
   while (play) {
     if (player.difficulty === 'regular') {
-      play = await oppositePlayer.gameboard.randomPlay();
-      refreshPlayerBoard(oppositePlayer);
+      play = await player.gameboard.randomPlay();
+      refreshPlayerBoard(player);
     } else {
-      play = await oppositePlayer.gameboard.hardPlay();
-      refreshPlayerBoard(oppositePlayer);
+      play = await player.gameboard.hardPlay();
+      refreshPlayerBoard(player);
     }
   }
 }
@@ -184,8 +183,10 @@ function LoadGamePageContent() {
 
 export function refreshPlayerBoard(player) {
   let boardElement = document.getElementById(player.boardId);
-  boardElement.innerHTML = '';
-  boardElement.appendChild(buildBoard(player));
+  if (!isRunning) {
+    boardElement.innerHTML = '';
+    boardElement.appendChild(buildBoard(player));
+  }
   let miniShipsContainer = document.getElementById(
     `${player.side}-mini-ships-container`
   );

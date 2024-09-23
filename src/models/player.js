@@ -5,7 +5,11 @@ export default class Player {
   constructor(type, name, difficulty, side) {
     this.gameboard = new Gameboard();
     this.type = type;
-    this.name = name ? name : type === 'human' ? 'Human' : 'CPU';
+    this.name = name
+      ? name
+      : type === 'human'
+      ? `Player ${side === 'right' ? 'Two' : 'One'}`
+      : `${side.charAt(0).toUpperCase() + side.slice(1)} CPU`;
     this.side = side;
     this.difficulty = difficulty;
     this.boardId = `${side}-player-container`;
