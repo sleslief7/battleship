@@ -38,10 +38,12 @@ export default class Gameboard {
   }
 
   placeShip(ship, x, y) {
-    const isHorizontal = ship.direction === 'horizontal';
+    const isH = ship.direction === 'horizontal';
+    ship.x = x;
+    ship.y = y;
     for (let i = 0; i < ship.length; i++) {
-      const dX = isHorizontal ? i : 0;
-      const dY = !isHorizontal ? i : 0;
+      const dX = isH ? i : 0;
+      const dY = !isH ? i : 0;
       this.board[x + dX][y - dY] = ship;
       ship.coordinates.push([x + dX, y - dY]);
     }

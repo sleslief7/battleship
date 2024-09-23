@@ -8,6 +8,8 @@ export default class Ship {
     this.direction = direction;
     this.hits = 0;
     this.coordinates = [];
+    this.x;
+    this.y;
   }
 
   hit() {

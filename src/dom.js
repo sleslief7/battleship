@@ -13,11 +13,38 @@ export function buildBoard(player) {
       tile.classList.add(`tile`);
       tile.setAttribute('data-x', x);
       tile.setAttribute('data-y', y);
-      if (ship && (player.type === 'human' || true)) tile.classList.add('ship'); // TODO
+      tile.style.gridColumn = x + 1;
+      tile.style.gridRow = boardSize - y;
       colorTile(gameboard, tile, x, y);
       boardDiv.appendChild(tile);
     }
   }
+  gameboard.ships.forEach((ship) => {
+    if (player.type === 'human' || ship.isSunk()) {
+      let shipElement = document.createElement('div');
+      let isH = ship.direction === 'horizontal';
+      let x = ship.x;
+      let y = ship.y;
+      let length = ship.length;
+      let shipImgName = isH
+        ? ship.name.toLowerCase()
+        : `rotated-${ship.name.toLowerCase()}`;
+      let gridColumn = x + 1;
+      let gridRow = boardSize - y;
+
+      shipElement.style.cssText = isH
+        ? `
+        grid-column: ${gridColumn} / span ${length};
+        grid-row: ${gridRow};
+      `
+        : `
+      grid-column: ${gridColumn} ;
+      grid-row: ${gridRow} / span ${length}`;
+      shipElement.classList.add('placedShip', shipImgName);
+      boardDiv.appendChild(shipElement);
+    }
+  });
+
   return boardDiv;
 }
 
