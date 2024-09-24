@@ -3,6 +3,7 @@
     scroll-behavior: auto;
     height: auto;
     max-height: none;
+    margin-bottom: 45px;
   }
   #player-type-selection-container {
     flex-direction: column;
