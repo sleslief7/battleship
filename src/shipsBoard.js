@@ -41,7 +41,7 @@ export function displayHitShip(player) {
     );
 
     for (let i = 0; i < ship.hits; i++) {
-      shipWagons[i].classList.add('hit');
+      shipWagons[i].classList.add('mini-ship-hit');
     }
   }
 }

@@ -194,7 +194,14 @@ export function refreshPlayerBoard(player) {
 
   if (isRunning) {
     boardElement.innerHTML = '';
+    displayHitShip(player);
     boardElement.appendChild(buildBoard(player));
+    if (
+      player.gameboard.areAllShipsSunk() ||
+      oppositePlayer.gameboard.areAllShipsSunk()
+    ) {
+      return;
+    }
     miniShipsContainer.innerHTML = '';
     miniShipsContainer.appendChild(shipsBoardDisplay(player.side));
     displayHitShip(player);

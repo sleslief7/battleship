@@ -16,7 +16,7 @@
   </head>
   <body>
     <header>
-      <button id="home-btn" class="btn">
+      <button id="home-btn" class="btn" title="Go to home">
         <i class="fa-solid fa-house"></i>
       </button>
       <h1 id="title">Battleship</h1>
@@ -148,12 +148,22 @@
         </div>
       </div>
       <div id="pre-game-controls-container" class="hidden">
-        <button id="randomize" class="pre-game-btns btn">
-          Randomize ships
+        <button
+          id="randomize"
+          class="pre-game-btns btn"
+          title="Place ships randomly"
+        >
+          <i class="fa-solid fa-shuffle"></i>
         </button>
-        <button id="start-game" class="pre-game-btns btn">Start Game</button>
-        <button id="start-cpu-game" class="hidden pre-game-btns btn">
-          Start Game
+        <button id="start-game" class="pre-game-btns btn" title="Start Game">
+          <i class="fa-solid fa-play"></i>
+        </button>
+        <button
+          id="start-cpu-game"
+          class="hidden pre-game-btns btn"
+          title="Start Game"
+        >
+          <i class="fa-solid fa-play"></i>
         </button>
       </div>
     </div>

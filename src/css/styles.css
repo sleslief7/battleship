@@ -5,10 +5,17 @@
   font-weight: 200;
 }
 
+:root {
+  --my-aqua: rgb(170, 254, 255);
+}
+
 body {
   font-family: DMSans, sans-serif;
   background-color: rgb(15, 15, 17);
   color: rgb(237, 230, 230);
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
 }
 
 header {
@@ -45,11 +52,17 @@ h1 {
   height: 400px;
   display: grid;
   gap: 1px;
+  border: solid 2px var(--my-aqua);
+  border-radius: 2px;
+  background-color: rgb(4, 0, 64);
 }
 
 .tile {
-  background-color: rgb(73, 73, 227);
+  background-color: rgb(0, 0, 96);
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .tile:hover:not(.hit, .miss, .sunk) {
@@ -57,19 +70,25 @@ h1 {
 }
 
 .ship {
-  background-color: aqua;
+  background-color: var(--my-aqua);
 }
-
 .hit {
-  background-color: brown;
+  color: brown;
 }
-
+.tile i {
+  max-width: 100%;
+  max-height: 100%;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.hit i {
+  font-size: 1.8rem;
+}
 .miss {
-  background-color: gray;
+  color: rgb(201, 201, 201);
 }
-
 .sunk {
-  background-color: black;
+  background-color: var(--my-aqua);
 }
 
 .pointer-events-disabled {
@@ -241,6 +260,7 @@ select {
   flex-direction: column;
   flex-wrap: wrap;
   gap: 5px;
+  width: 250px;
 }
 
 .draggable-ship {
@@ -299,10 +319,24 @@ select {
 }
 
 .can-drop {
-  background-color: aqua;
+  background-color: var(--my-aqua);
 }
 
 .can-not-drop {
   background-color: red;
   cursor: not-allowed;
+}
+
+.mini-ship-hit {
+  background-color: brown;
+}
+
+.btn-container {
+  display: flex;
+  gap: 5px;
+}
+
+#left-mini-ships-container,
+#right-mini-ships-container {
+  width: max-content;
 }

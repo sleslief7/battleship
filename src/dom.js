@@ -5,6 +5,7 @@ export function buildBoard(player) {
   const boardDiv = document.createElement('div');
   boardDiv.classList.add('board');
   boardDiv.style.gridTemplateColumns = `repeat(${boardSize}, 1fr)`;
+  boardDiv.style.gridTemplateRows = `repeat(${boardSize}, 1fr)`;
 
   for (let y = boardSize - 1; y >= 0; y--) {
     for (let x = 0; x < boardSize; x++) {
@@ -39,8 +40,8 @@ export function buildBoard(player) {
       `
         : `
       grid-column: ${gridColumn} ;
-      grid-row: ${gridRow} / span ${length}`;
-      shipElement.classList.add('placedShip', shipImgName);
+      grid-row: ${gridRow} / span ${length}; `;
+      shipElement.classList.add('placed-ship', shipImgName);
       boardDiv.appendChild(shipElement);
     }
   });
@@ -50,12 +51,17 @@ export function buildBoard(player) {
 
 function colorTile(gameBoard, tile, x, y) {
   const ship = gameBoard.board[x][y];
+  let el = document.createElement('i');
 
-  if (gameBoard.hits.has(`[${x}, ${y}]`)) {
+  if (gameBoard.hits.has(`[${x}, ${y}]`) && !ship.isSunk()) {
+    el.classList.add('fa-regular', 'fa-circle-dot');
+    tile.appendChild(el);
     tile.classList.add('hit');
     tile.style.pointerEvents = 'none';
   }
   if (gameBoard.misses.has(`[${x}, ${y}]`)) {
+    el.classList.add('fa-regular', 'fa-circle');
+    tile.appendChild(el);
     tile.classList.add('miss');
     tile.style.pointerEvents = 'none';
   }

@@ -29,7 +29,7 @@
   background-image: url('../assets/rotated-destroyer.png');
 }
 
-.placedShip {
+.placed-ship {
   background-size: 96% 90%;
   background-repeat: no-repeat;
   background-position: center;

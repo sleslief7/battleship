@@ -16,9 +16,13 @@ export function buildDraggableShips(player) {
 
   let resetShipsBtn = document.createElement('button');
   let rotateBtn = document.createElement('button');
-  resetShipsBtn.textContent = 'Reset';
+  let btnContainer = document.createElement('div');
+  btnContainer.classList.add('btn-container');
+  resetShipsBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i>';
+  resetShipsBtn.title = 'Reset Ships';
   resetShipsBtn.classList.add('btn');
-  rotateBtn.textContent = 'Rotate';
+  rotateBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+  rotateBtn.title = 'Rotate Ships';
   rotateBtn.classList.add('btn');
   rotateBtn.id = 'rotate-ships-btn';
   rotateBtn.addEventListener('click', () => handleRotateShipsBtn(player));
@@ -50,8 +54,9 @@ export function buildDraggableShips(player) {
   });
 
   boardBuilderControls.appendChild(shipsContainer);
-  boardBuilderControls.appendChild(resetShipsBtn);
-  boardBuilderControls.appendChild(rotateBtn);
+  btnContainer.appendChild(resetShipsBtn);
+  btnContainer.appendChild(rotateBtn);
+  boardBuilderControls.appendChild(btnContainer);
 }
 
 function handleResetShipsBtn(player) {
