@@ -1,0 +1,51 @@
+@media all and (max-width: 415px) {
+  body {
+    scroll-behavior: auto;
+    height: auto;
+    max-height: none;
+  }
+  #player-type-selection-container {
+    flex-direction: column;
+    margin-top: 45px;
+  }
+
+  header {
+    height: max-content;
+  }
+
+  .expanded-vs {
+    width: 90vw;
+  }
+
+  .players {
+    text-align: center;
+  }
+  #boards-container {
+    height: auto;
+  }
+  .board-plus-mini-ships-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #left-mini-ships-container {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #draggable-ships-container {
+    width: fit-content;
+    align-items: center;
+    display: none;
+  }
+  .btn-container {
+    display: none;
+  }
+  .board {
+    width: 85vw;
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+}

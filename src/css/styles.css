@@ -65,7 +65,7 @@ h1 {
   align-items: center;
 }
 
-.tile:hover:not(.hit, .miss, .sunk) {
+.tile:hover:not(.hit, .miss) {
   background-color: rgb(214, 186, 43);
 }
 
@@ -86,9 +86,6 @@ h1 {
 }
 .miss {
   color: rgb(201, 201, 201);
-}
-.sunk {
-  background-color: var(--my-aqua);
 }
 
 .pointer-events-disabled {
@@ -339,4 +336,12 @@ select {
 #left-mini-ships-container,
 #right-mini-ships-container {
   width: max-content;
+}
+
+.sunk-x {
+  color: brown;
+  font-size: 2rem !important;
+  font-weight: 900 !important;
+  z-index: 2;
+  opacity: 0.8;
 }

@@ -1,5 +1,6 @@
 import './css/styles.css';
 import './css/battleships.css';
+import './css/responsive.css';
 import Player from './models/player.js';
 import { buildBoard } from './dom.js';
 import { SHIP_MODELS } from './constants.js';

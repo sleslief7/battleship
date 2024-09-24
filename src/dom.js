@@ -67,7 +67,7 @@ function colorTile(gameBoard, tile, x, y) {
   }
   if (ship && ship.isSunk()) {
     tile.classList.toggle('hit', false);
-    tile.classList.toggle('sunk', true);
+    tile.innerHTML = '<i class="fa-solid fa-x sunk-x"></i>';
     tile.style.pointerEvents = 'none';
   }
 }
