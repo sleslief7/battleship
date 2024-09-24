@@ -72,6 +72,7 @@ function handleGameEnd(player) {
 }
 
 function handleHomeBtn(btn) {
+  if (isRunning) isRunning = false;
   let miniShipsContainerOne = document.getElementById(
     `left-mini-ships-container`
   );
@@ -249,6 +250,10 @@ function displayNames() {
     (!isRunning && playerOne.type === 'cpu')
   ) {
     playerTwoTitle.textContent = playerTwo.name;
+  }
+  if (playerOne.type === playerTwo.type) {
+    playerOneTitle.textContent = `${playerOne.name} One`;
+    playerTwoTitle.textContent = `${playerTwo.name} Two`;
   }
 }
 
