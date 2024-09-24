@@ -26,7 +26,7 @@
     justify-content: center;
     align-items: center;
   }
-  #boards-container div {
+  .board-and-title {
     width: 95%;
     display: flex;
     flex-direction: column;
