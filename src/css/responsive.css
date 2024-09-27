@@ -1,10 +1,15 @@
 @media all and (max-width: 440px) {
   body {
     scroll-behavior: auto;
-    height: auto;
+    height: 100%;
     max-height: none;
     margin-bottom: 45px;
   }
+
+  #title {
+    font-size: 3.5rem;
+  }
+
   #player-type-selection-container {
     flex-direction: column;
     margin-top: 45px;
@@ -15,7 +20,16 @@
   }
 
   .expanded-vs {
-    width: 90vw;
+    width: 75vw;
+    height: 200px;
+  }
+
+  .vs-input-group {
+    padding-top: 0;
+  }
+
+  .vs .vs-icons-group {
+    translate: 0 20%;
   }
 
   .players {

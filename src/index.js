@@ -71,7 +71,7 @@ function handleGameEnd(player) {
   isRunning = false;
 }
 
-function handleHomeBtn(btn) {
+function handleHomeBtn(e) {
   if (isRunning) isRunning = false;
   let miniShipsContainerOne = document.getElementById(
     `left-mini-ships-container`
@@ -84,7 +84,7 @@ function handleHomeBtn(btn) {
   rightBoard.innerHTML = '';
   result.textContent = '';
   playerOne = playerTwo = leftType = rightType = null;
-  btn.classList.toggle('hidden', true);
+  homeBtn.classList.toggle('hidden', true);
   document.getElementById('player-two').textContent = '';
   isRunning = false;
   localStorage.clear();
@@ -120,8 +120,7 @@ function setPage(i) {
   pageIds.forEach((pId) =>
     document.getElementById(pId).classList.toggle('hidden', true)
   );
-  if (i == -1) {
-  } else if (i === 1) {
+  if (i === 1) {
     LoadGamePageContent();
     homeBtn.classList.toggle('hidden', false);
   }
@@ -130,6 +129,7 @@ function setPage(i) {
 
 document.querySelectorAll('.vs').forEach((option) => {
   option.addEventListener('click', (e) => {
+    e.stopPropagation();
     const el = e.currentTarget;
     leftType = el.getAttribute('data-left-type');
     rightType = el.getAttribute('data-right-type');
@@ -244,16 +244,19 @@ function displayNames() {
   playerOneTitle.textContent = '';
   playerTwoTitle.textContent = '';
   playerOneTitle.textContent = playerOne.name;
+  if (playerOne.type === playerTwo.type) {
+    playerOne.name = `${playerOne.name} One`;
+    playerTwo.name = `${playerTwo.name} Two`;
+    playerOneTitle.textContent = playerOne.name;
+    playerTwoTitle.textContent = playerTwo.name;
+    return;
+  }
   if (
     isRunning ||
     (isRunning && playerTwo.type === 'cpu') ||
     (!isRunning && playerOne.type === 'cpu')
   ) {
     playerTwoTitle.textContent = playerTwo.name;
-  }
-  if (playerOne.type === playerTwo.type) {
-    playerOneTitle.textContent = `${playerOne.name} One`;
-    playerTwoTitle.textContent = `${playerTwo.name} Two`;
   }
 }
 
@@ -309,6 +312,20 @@ function placePlayerShips(player) {
   refreshPlayerBoard(player);
 }
 
+document.body.addEventListener('click', (e) => {
+  document.querySelectorAll('.vs').forEach((el) => {
+    el.classList.toggle('expanded-vs', false);
+    el.classList.toggle('hidden-vs', false);
+  });
+});
+
+document.getElementById('title').addEventListener('click', handleHomeBtn);
 document.getElementById('start-game').onclick = startGame;
+homeBtn.addEventListener('click', handleHomeBtn);
+
+document.onreadystatechange = () => {
+  if (document.readyState === 'complete') {
+    document.body.style.visibility = 'visible';
+  }
+};
 refreshPage();
-homeBtn.addEventListener('click', () => handleHomeBtn(homeBtn));

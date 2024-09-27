@@ -5,64 +5,140 @@
   font-weight: 200;
 }
 
+@font-face {
+  font-family: 'PermanentMarket';
+  src: url('../assets/PermanentMarker-Regular.ttf');
+  font-style: normal;
+  font-weight: 200;
+}
+
 :root {
   --my-aqua: rgb(170, 254, 255);
+  --my-font: PermanentMarket, sans-serif;
+  height: 100%;
 }
 
 body {
   font-family: DMSans, sans-serif;
   background-color: rgb(15, 15, 17);
   color: rgb(237, 230, 230);
-  height: 100vh;
-  max-height: 100vh;
+  padding: 15px;
   margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: text-focus-in 0.85s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+  background: linear-gradient(
+    to bottom,
+    rgb(34, 34, 34) 0%,
+    rgb(15, 15, 17) 100%
+  );
+  padding-bottom: 15px;
+}
+
+footer {
+  position: static;
   width: 100%;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgb(15, 15, 17) 0%,
+    rgb(34, 34, 34) 100%
+  );
+  height: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: text-focus-in 0.85s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
+
+#credits {
+  text-align: center;
+}
+
+#credits a {
+  color: white;
+  text-decoration: none;
+  font-weight: bolder;
+}
+
+#credits a:visited {
+  color: white;
+}
+
+#credits a:hover {
+  color: var(--my-aqua);
 }
 
 #title {
   margin: 0;
+  text-align: center;
+  font-weight: 800;
+  font-size: 5rem;
+  font-family: var(--my-font);
+  cursor: pointer;
+}
+@keyframes text-focus-in {
+  0% {
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
 }
 
 #home-btn {
-  font-size: 1rem;
+  position: absolute;
+  top: 39px;
+  left: 39px;
+  font-size: 1.3rem;
   float: left;
-}
-
-h1 {
-  text-align: center;
-  font-weight: 800;
-  font-size: 3.8rem;
-  justify-self: start;
+  margin-right: auto;
 }
 
 #boards-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
 .board {
   width: 400px;
   height: 400px;
   display: grid;
-  gap: 1px;
   border: solid 2px var(--my-aqua);
-  border-radius: 2px;
-  background-color: rgb(4, 0, 64);
+  border-radius: 3px;
+  /* background-color: rgb(4, 0, 64); */
+  background-image: url('../assets/ocean.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.board::after {
+  content: '';
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0, 0, 0);
 }
 
 .tile {
-  background-color: rgb(0, 0, 96);
+  /* background-color: rgb(0, 0, 96); */
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 1px solid black;
 }
 
 .tile:hover:not(.hit, .miss) {
@@ -99,7 +175,22 @@ h1 {
   justify-content: center;
   height: 60vh;
   font-size: 1.5rem;
-  transition: all 0.5s ease;
+  transition: all 0.6s ease;
+  animation: slide-in-elliptic-top-fwd 0.85s
+    cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes slide-in-elliptic-top-fwd {
+  0% {
+    transform: translateY(-600px) rotateX(-30deg) scale(0);
+    transform-origin: 50% 100%;
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) rotateX(0) scale(1);
+    transform-origin: 50% 1400px;
+    opacity: 1;
+  }
 }
 
 .vs {
@@ -114,7 +205,6 @@ h1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
   transition: width 0.5s ease, height 0.5s ease, background-color 0.3s ease;
 }
 
@@ -143,7 +233,6 @@ h1 {
 .vs .vs-input-group {
   opacity: 0;
   pointer-events: none;
-  height: 0px;
 }
 
 .expanded-vs .vs-input-group {
@@ -151,7 +240,6 @@ h1 {
   transition: all 0.5s ease-in;
   transition-delay: 0.5s;
   pointer-events: all;
-  height: 10px;
 }
 
 .vs-input-group,
@@ -160,6 +248,18 @@ h1 {
   display: flex;
   justify-content: space-evenly;
   align-items: end;
+}
+
+.vs-icons-group {
+  transition: translate 0.5s ease-out;
+}
+
+.vs .vs-icons-group {
+  translate: 0 30%;
+}
+
+.expanded-vs .vs-icons-group {
+  translate: 0 0%;
 }
 
 .expanded-vs .human,
@@ -173,6 +273,11 @@ h1 {
 
 .expanded-vs .vs-letter-icon {
   font-size: 2rem;
+}
+
+.vs-text {
+  font-family: var(--my-font);
+  font-size: 1.6rem;
 }
 
 .play-btn {
@@ -191,7 +296,7 @@ h1 {
 }
 
 .vs:hover:not(.expanded-vs) {
-  background-color: rgb(20, 40, 35);
+  background-color: rgb(18, 42, 48);
 }
 
 .hidden {
@@ -212,7 +317,7 @@ select {
 }
 
 #pre-game-controls-container {
-  margin-top: 15px;
+  margin: 15px 0 15px 0;
   display: flex;
   gap: 5px;
   justify-content: center;
@@ -282,7 +387,10 @@ select {
 }
 #result {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  height: 15px;
 }
 
 .human,
@@ -344,4 +452,8 @@ select {
   font-weight: 900 !important;
   z-index: 2;
   opacity: 0.8;
+}
+.players {
+  font-family: var(--my-font);
+  margin: 0;
 }
