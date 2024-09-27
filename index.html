@@ -10,21 +10,23 @@
     <title>Battleship</title>
     <style>
       body {
-        background-color: black; /* Set your desired background color here */
+        background-color: black;
+        visibility: hidden;
       }
     </style>
   <script defer src="runtime.bundle.js"></script><script defer src="index.bundle.js"></script></head>
   <body>
     <header>
-      <button id="home-btn" class="btn" title="Go to home">
+      <button id="home-btn" class="btn hidden" title="Go to home">
         <i class="fa-solid fa-house"></i>
       </button>
-      <h1 id="title">Battleship</h1>
+      <span id="title">Battleship</span>
       <div></div>
     </header>
-    <div id="landing-page">
-      <div id="player-type-selection-container" class="hidden">
-        <!-- <div
+    <div>
+      <div id="landing-page">
+        <div id="player-type-selection-container" class="hidden">
+          <!-- <div
           id="vs-h-h"
           class="vs"
           data-left-type="human"
@@ -58,114 +60,126 @@
             />
           </div>
         </div> -->
-        <div
-          id="vs-h-c"
-          class="vs"
-          data-left-type="human"
-          data-right-type="cpu"
-        >
-          <div class="vs-icons-group">
-            <p><i class="fa-solid fa-user human"></i></p>
-            <p>
-              <i class="fa-solid fa-v vs-letter-icon"></i>
-              <i class="fa-solid fa-s vs-letter-icon"></i>
-            </p>
-            <p><i class="fa-solid fa-robot cpu"></i></p>
-          </div>
-          <div class="vs-input-group">
-            <input
-              type="text"
-              id="h-c-left-name"
-              class="left-name"
-              maxlength="20"
-              placeholder="Name"
-            />
-            <div class="play-btn">
-              <i class="fa-solid fa-play"></i>
+          <div
+            id="vs-h-c"
+            class="vs"
+            data-left-type="human"
+            data-right-type="cpu"
+          >
+            <div class="vs-icons-group">
+              <p><i class="fa-solid fa-user human"></i></p>
+              <p class="vs-text">vs</p>
+              <p><i class="fa-solid fa-robot cpu"></i></p>
             </div>
-            <select
-              name="difficulty"
-              class="right-difficulty"
-              id="h-c-right-difficulty"
-            >
-              <option value="regular">Normal</option>
-              <option value="hard">Hard</option>
-            </select>
+            <div class="vs-input-group">
+              <input
+                type="text"
+                id="h-c-left-name"
+                class="left-name"
+                maxlength="20"
+                placeholder="Name"
+              />
+              <div class="play-btn">
+                <i class="fa-solid fa-play"></i>
+              </div>
+              <select
+                name="difficulty"
+                class="right-difficulty"
+                id="h-c-right-difficulty"
+              >
+                <option value="regular">Normal</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+          </div>
+          <div
+            id="vs-c-c"
+            class="vs"
+            data-left-type="cpu"
+            data-right-type="cpu"
+          >
+            <div class="vs-icons-group">
+              <p><i class="fa-solid fa-robot cpu"></i></p>
+              <p class="vs-text">vs</p>
+              <p><i class="fa-solid fa-robot cpu"></i></p>
+            </div>
+            <div class="vs-input-group">
+              <select
+                name="difficulty"
+                class="left-difficulty"
+                id="c-c-left-difficulty"
+              >
+                <option value="regular">Normal</option>
+                <option value="hard">Hard</option>
+              </select>
+              <div class="play-btn">
+                <i class="fa-solid fa-play"></i>
+              </div>
+              <select
+                name="difficulty"
+                class="right-difficulty"
+                id="c-c-right-difficulty"
+              >
+                <option value="regular">Normal</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
           </div>
         </div>
-        <div id="vs-c-c" class="vs" data-left-type="cpu" data-right-type="cpu">
-          <div class="vs-icons-group">
-            <p><i class="fa-solid fa-robot cpu"></i></p>
-            <p>
-              <i class="fa-solid fa-v vs-letter-icon"></i>
-              <i class="fa-solid fa-s vs-letter-icon"></i>
-            </p>
-            <p><i class="fa-solid fa-robot cpu"></i></p>
-          </div>
-          <div class="vs-input-group">
-            <select
-              name="difficulty"
-              class="left-difficulty"
-              id="c-c-left-difficulty"
-            >
-              <option value="regular">Normal</option>
-              <option value="hard">Hard</option>
-            </select>
-            <div class="play-btn">
-              <i class="fa-solid fa-play"></i>
+      </div>
+      <div id="game-page">
+        <p id="result"></p>
+        <div id="boards-container">
+          <div class="board-and-title">
+            <h2 class="players" id="player-one"></h2>
+            <div class="board-plus-mini-ships-container">
+              <div id="left-player-container" class="gameBoard"></div>
+              <div id="left-mini-ships-container"></div>
             </div>
-            <select
-              name="difficulty"
-              class="right-difficulty"
-              id="c-c-right-difficulty"
-            >
-              <option value="regular">Normal</option>
-              <option value="hard">Hard</option>
-            </select>
           </div>
+          <div class="board-and-title">
+            <h2 class="players" id="player-two"></h2>
+            <div class="board-plus-mini-ships-container">
+              <div
+                id="right-player-container"
+                class="gameBoard pointer-events-disabled"
+              ></div>
+              <div id="right-mini-ships-container"></div>
+            </div>
+          </div>
+        </div>
+        <div id="pre-game-controls-container" class="hidden">
+          <button
+            id="randomize"
+            class="pre-game-btns btn"
+            title="Place ships randomly"
+          >
+            <i class="fa-solid fa-shuffle"></i>
+          </button>
+          <button id="start-game" class="pre-game-btns btn" title="Start Game">
+            <i class="fa-solid fa-play"></i>
+          </button>
+          <button
+            id="start-cpu-game"
+            class="hidden pre-game-btns btn"
+            title="Start Game"
+          >
+            <i class="fa-solid fa-play"></i>
+          </button>
         </div>
       </div>
     </div>
-    <div id="game-page">
-      <p id="result"></p>
-      <div id="boards-container">
-        <div class="board-and-title">
-          <h2 class="players" id="player-one"></h2>
-          <div class="board-plus-mini-ships-container">
-            <div id="left-player-container" class="gameBoard"></div>
-            <div id="left-mini-ships-container"></div>
-          </div>
-        </div>
-        <div class="board-and-title">
-          <h2 class="players" id="player-two"></h2>
-          <div class="board-plus-mini-ships-container">
-            <div
-              id="right-player-container"
-              class="gameBoard pointer-events-disabled"
-            ></div>
-            <div id="right-mini-ships-container"></div>
-          </div>
-        </div>
-      </div>
-      <div id="pre-game-controls-container" class="hidden">
-        <button
-          id="randomize"
-          class="pre-game-btns btn"
-          title="Place ships randomly"
-        >
-          <i class="fa-solid fa-shuffle"></i>
-        </button>
-        <button id="start-game" class="pre-game-btns btn" title="Start Game">
-          <i class="fa-solid fa-play"></i>
-        </button>
-        <button
-          id="start-cpu-game"
-          class="hidden pre-game-btns btn"
-          title="Start Game"
-        >
-          <i class="fa-solid fa-play"></i>
-        </button>
-      </div>
-    </div>
+    <footer>
+      <h5 id="credits">
+        Created by
+        <a
+          href="https://github.com/sleslief7/battleship"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Leslie Fernandez
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </h5>
+    </footer>
   </body>
 </html>
