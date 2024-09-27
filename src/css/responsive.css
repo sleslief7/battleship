@@ -5,7 +5,10 @@
     max-height: none;
     margin-bottom: 45px;
   }
-
+  #home-btn {
+    top: 10px;
+    left: 5px;
+  }
   #title {
     font-size: 3.5rem;
   }
@@ -13,6 +16,7 @@
   #player-type-selection-container {
     flex-direction: column;
     margin-top: 45px;
+    font-size: 0.8rem;
   }
 
   header {
@@ -29,7 +33,11 @@
   }
 
   .vs .vs-icons-group {
-    translate: 0 20%;
+    translate: 0 10%;
+  }
+
+  .expanded-vs .vs-icons-group {
+    translate: 0 -10%;
   }
 
   .players {
