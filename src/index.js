@@ -75,10 +75,7 @@ function handleGameEnd(player) {
 }
 
 async function handleHomeBtn(e) {
-  if (isRunning) {
-    isRunning = false;
-    await delay(500);
-  }
+  isRunning = false;
   let miniShipsContainerOne = document.getElementById(
     `left-mini-ships-container`
   );
@@ -93,7 +90,6 @@ async function handleHomeBtn(e) {
   playerOne = playerTwo = leftType = rightType = null;
   homeBtn.classList.toggle('hidden', true);
   document.getElementById('player-two').textContent = '';
-  isRunning = false;
   localStorage.clear();
   refreshPage();
 }
@@ -311,7 +307,7 @@ startCpuGameBtn.onclick = async () => {
     const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
     result.textContent = '';
     await handleCpuPlay(oppositePlayer);
-
+    refreshPlayerBoard(currentPlayer);
     if (currentPlayer.gameboard.areAllShipsSunk()) {
       handleGameEnd(oppositePlayer);
       return;
