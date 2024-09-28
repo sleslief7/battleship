@@ -33,11 +33,11 @@
   }
 
   .vs .vs-icons-group {
-    translate: 0 10%;
+    translate: 0 22%;
   }
 
   .expanded-vs .vs-icons-group {
-    translate: 0 -10%;
+    translate: 0 -5%;
   }
 
   .players {
@@ -72,5 +72,14 @@
   }
   .sunk-x {
     font-weight: 500;
+  }
+
+  .expanded-vs .human,
+  .expanded-vs .cpu {
+    font-size: 4rem;
+  }
+
+  .expanded-vs .vs-text {
+    font-size: 2.2rem;
   }
 }
