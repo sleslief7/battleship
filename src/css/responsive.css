@@ -82,4 +82,8 @@
   .expanded-vs .vs-text {
     font-size: 2.2rem;
   }
+
+  #home-btn {
+    display: none;
+  }
 }
