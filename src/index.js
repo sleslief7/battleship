@@ -300,7 +300,6 @@ function handleCpuVsCpuGame() {
       const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
       result.textContent = '';
       await handleCpuPlay(oppositePlayer);
-      refreshPlayerBoard(currentPlayer);
 
       if (currentPlayer.gameboard.areAllShipsSunk()) {
         handleGameEnd(oppositePlayer);
