@@ -85,7 +85,7 @@
                 class="right-difficulty"
                 id="h-c-right-difficulty"
               >
-                <option value="regular">Normal</option>
+                <option value="regular">Easy</option>
                 <option value="hard">Hard</option>
               </select>
             </div>
@@ -107,7 +107,7 @@
                 class="left-difficulty"
                 id="c-c-left-difficulty"
               >
-                <option value="regular">Normal</option>
+                <option value="regular">Easy</option>
                 <option value="hard">Hard</option>
               </select>
               <div class="play-btn">
@@ -118,7 +118,7 @@
                 class="right-difficulty"
                 id="c-c-right-difficulty"
               >
-                <option value="regular">Normal</option>
+                <option value="regular">Easy</option>
                 <option value="hard">Hard</option>
               </select>
             </div>
@@ -146,24 +146,30 @@
             </div>
           </div>
         </div>
-        <div id="pre-game-controls-container" class="hidden">
-          <button
-            id="randomize"
-            class="pre-game-btns btn"
-            title="Place ships randomly"
-          >
-            <i class="fa-solid fa-shuffle"></i>
-          </button>
-          <button id="start-game" class="pre-game-btns btn" title="Start Game">
-            <i class="fa-solid fa-play"></i>
-          </button>
-          <button
-            id="start-cpu-game"
-            class="hidden pre-game-btns btn"
-            title="Start Game"
-          >
-            <i class="fa-solid fa-play"></i>
-          </button>
+        <div id="pre-game-controls-parent-container">
+          <div id="pre-game-controls-container" class="hidden">
+            <button
+              id="randomize"
+              class="pre-game-btns btn"
+              title="Place ships randomly"
+            >
+              <i class="fa-solid fa-shuffle"></i>
+            </button>
+            <button
+              id="start-game"
+              class="pre-game-btns btn"
+              title="Start Game"
+            >
+              <i class="fa-solid fa-play"></i>
+            </button>
+            <button
+              id="start-cpu-game"
+              class="hidden pre-game-btns btn"
+              title="Start Game"
+            >
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
