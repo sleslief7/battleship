@@ -23,6 +23,7 @@ const randomizeBtn = document.getElementById('randomize');
 const homeBtn = document.getElementById('home-btn');
 const preGameControls = document.getElementById('pre-game-controls-container');
 const startCpuGameBtn = document.getElementById('start-cpu-game');
+
 let isRunning = false;
 
 async function handleTileClick(e, player) {
