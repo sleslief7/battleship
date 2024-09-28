@@ -71,8 +71,9 @@ function handleGameEnd(player) {
   isRunning = false;
 }
 
-function handleHomeBtn(e) {
+async function handleHomeBtn(e) {
   if (isRunning) isRunning = false;
+  await delay(500);
   let miniShipsContainerOne = document.getElementById(
     `left-mini-ships-container`
   );
@@ -81,6 +82,7 @@ function handleHomeBtn(e) {
   );
   miniShipsContainerOne.innerHTML = '';
   miniShipsContainerTwo.innerHTML = '';
+  leftBoard.innerHTML = '';
   rightBoard.innerHTML = '';
   result.textContent = '';
   playerOne = playerTwo = leftType = rightType = null;
@@ -301,7 +303,7 @@ function handleCpuVsCpuGame() {
         handleGameEnd(oppositePlayer);
         return;
       }
-      isRunning = !currentPlayer.gameboard.areAllShipsSunk();
+      isRunning = isRunning && !currentPlayer.gameboard.areAllShipsSunk();
       isLeftPlayerTurn = !isLeftPlayerTurn;
     }
   });
@@ -310,6 +312,10 @@ function handleCpuVsCpuGame() {
 function placePlayerShips(player) {
   player.gameboard.placeShipsRandomly();
   refreshPlayerBoard(player);
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 document.body.addEventListener('click', (e) => {
