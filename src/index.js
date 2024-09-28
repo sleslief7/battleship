@@ -11,6 +11,7 @@ import {
   dropHandler,
   dragEnterHandler,
 } from './draggableElements.js';
+import './imagesPreload.js';
 
 let playerOne = Player.fromJSON(localStorage.getItem('playerOne'));
 let playerTwo = Player.fromJSON(localStorage.getItem('playerTwo'));
@@ -72,8 +73,10 @@ function handleGameEnd(player) {
 }
 
 async function handleHomeBtn(e) {
-  if (isRunning) isRunning = false;
-  await delay(500);
+  if (isRunning) {
+    isRunning = false;
+    await delay(1000);
+  }
   let miniShipsContainerOne = document.getElementById(
     `left-mini-ships-container`
   );

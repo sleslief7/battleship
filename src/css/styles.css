@@ -464,3 +464,7 @@ select {
   font-family: var(--my-font);
   margin: 0;
 }
+
+#game-page {
+  animation: text-focus-in 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+}
