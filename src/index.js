@@ -11,7 +11,6 @@ import {
   dropHandler,
   dragEnterHandler,
 } from './draggableElements.js';
-import './imagesPreload.js';
 
 let playerOne = Player.fromJSON(localStorage.getItem('playerOne'));
 let playerTwo = Player.fromJSON(localStorage.getItem('playerTwo'));
@@ -22,6 +21,8 @@ let leftBoard = document.getElementById('left-player-container');
 const result = document.getElementById('result');
 const randomizeBtn = document.getElementById('randomize');
 const homeBtn = document.getElementById('home-btn');
+const preGameControls = document.getElementById('pre-game-controls-container');
+const startCpuGameBtn = document.getElementById('start-cpu-game');
 let isRunning = false;
 
 async function handleTileClick(e, player) {
@@ -53,13 +54,13 @@ async function handleTileClick(e, player) {
 
 async function handleCpuPlay(player) {
   let play = true;
-  while (play) {
+  while (play && isRunning) {
     if (player.difficulty === 'regular') {
       play = await player.gameboard.randomPlay();
-      refreshPlayerBoard(player);
+      if (isRunning) refreshPlayerBoard(player);
     } else {
       play = await player.gameboard.hardPlay();
-      refreshPlayerBoard(player);
+      if (isRunning) refreshPlayerBoard(player);
     }
   }
 }
@@ -75,7 +76,7 @@ function handleGameEnd(player) {
 async function handleHomeBtn(e) {
   if (isRunning) {
     isRunning = false;
-    await delay(1000);
+    await delay(500);
   }
   let miniShipsContainerOne = document.getElementById(
     `left-mini-ships-container`
@@ -267,7 +268,6 @@ function displayNames() {
 
 function handleHumanVsCpuGame() {
   refreshPlayerBoard(playerOne);
-  let preGameControls = document.getElementById('pre-game-controls-container');
   preGameControls.classList.toggle('hidden', false);
   preGameControls.querySelectorAll('button').forEach((button) => {
     button.classList.toggle('hidden', true);
@@ -276,39 +276,17 @@ function handleHumanVsCpuGame() {
   startGameBtn.classList.toggle('hidden', false);
   randomizeBtn.classList.toggle('hidden', false);
 }
+
 function handleCpuVsCpuGame() {
   placePlayerShips(playerOne);
   placePlayerShips(playerTwo);
 
-  let preGameControls = document.getElementById('pre-game-controls-container');
   preGameControls.classList.toggle('hidden', false);
   preGameControls.querySelectorAll('button').forEach((button) => {
     button.classList.toggle('hidden', true);
   });
-  let startCpuGameBtn = document.getElementById('start-cpu-game');
 
   startCpuGameBtn.classList.toggle('hidden', false);
-
-  startCpuGameBtn.addEventListener('click', async () => {
-    preGameControls.classList.toggle('hidden', true);
-
-    rightBoard.classList.toggle('pointer-events-disabled', true);
-    isRunning = true;
-    let isLeftPlayerTurn = true;
-    while (isRunning) {
-      const currentPlayer = isLeftPlayerTurn ? playerOne : playerTwo;
-      const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
-      result.textContent = '';
-      await handleCpuPlay(oppositePlayer);
-
-      if (currentPlayer.gameboard.areAllShipsSunk()) {
-        handleGameEnd(oppositePlayer);
-        return;
-      }
-      isRunning = isRunning && !currentPlayer.gameboard.areAllShipsSunk();
-      isLeftPlayerTurn = !isLeftPlayerTurn;
-    }
-  });
 }
 
 function placePlayerShips(player) {
@@ -319,6 +297,28 @@ function placePlayerShips(player) {
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+startCpuGameBtn.onclick = async () => {
+  preGameControls.classList.toggle('hidden', true);
+
+  leftBoard.classList.toggle('pointer-events-disabled', true);
+  rightBoard.classList.toggle('pointer-events-disabled', true);
+  isRunning = true;
+  let isLeftPlayerTurn = true;
+  while (isRunning) {
+    const currentPlayer = isLeftPlayerTurn ? playerOne : playerTwo;
+    const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
+    result.textContent = '';
+    await handleCpuPlay(oppositePlayer);
+
+    if (currentPlayer.gameboard.areAllShipsSunk()) {
+      handleGameEnd(oppositePlayer);
+      return;
+    }
+    isRunning = isRunning && !currentPlayer.gameboard.areAllShipsSunk();
+    isLeftPlayerTurn = !isLeftPlayerTurn;
+  }
+};
 
 document.body.addEventListener('click', (e) => {
   document.querySelectorAll('.vs').forEach((el) => {
