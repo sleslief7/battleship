@@ -359,6 +359,7 @@ select {
   flex-wrap: wrap;
   gap: 5px;
   width: 250px;
+  padding-left: 12px;
 }
 
 .draggable-ship {
@@ -386,7 +387,7 @@ select {
   justify-content: center;
   align-items: center;
   margin: 0;
-  height: 15px;
+  height: 35px;
 }
 
 .human,
@@ -435,11 +436,15 @@ select {
 .btn-container {
   display: flex;
   gap: 5px;
+  padding-left: 12px;
 }
 
 #left-mini-ships-container,
 #right-mini-ships-container {
   width: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sunk-x {
