@@ -69,14 +69,14 @@ export default class Gameboard {
   }
 
   async hardPlay() {
-    if (!this.unresolvedHits.length) return this.randomPlay();
+    if (!this.unresolvedHits.length) return await this.randomPlay();
 
     let x = this.unresolvedHits.at(-1)[0];
     let y = this.unresolvedHits.at(-1)[1];
 
     let moves = this.getSuggestedMoves(x, y);
     if (!moves.length) moves = this.getPossibleMoves(x, y);
-    if (!moves.length) return this.randomPlay();
+    if (!moves.length) return await this.randomPlay();
 
     let rand = this.rand(moves.length - 1);
 
@@ -215,7 +215,7 @@ export default class Gameboard {
       .map(() => Array(this.boardSize).fill(null));
   }
 
-  delay(ms) {
+  async delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
