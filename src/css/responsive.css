@@ -5,10 +5,7 @@
     max-height: none;
     margin-bottom: 45px;
   }
-  #home-btn {
-    top: 10px;
-    left: 5px;
-  }
+
   #title {
     font-size: 3.5rem;
   }
@@ -43,12 +40,14 @@
   .players {
     text-align: center;
   }
+
   #boards-container {
     height: auto;
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
+
   .board-and-title {
     width: 95%;
     display: flex;
@@ -56,20 +55,25 @@
     justify-content: center;
     align-items: center;
   }
+
   .board-plus-mini-ships-container {
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
+
   #left-mini-ships-container,
-  #right-mini-ships-container {
+  #right-mini-ships-container,
+  #drag-ships-container {
     display: none !important;
   }
+
   .board {
     width: 80vw;
     height: auto;
     aspect-ratio: 1 / 1;
   }
+
   .sunk-x {
     font-weight: 500;
   }
@@ -85,5 +89,13 @@
 
   #home-btn {
     display: none;
+  }
+
+  #player-one {
+    text-align: center;
+  }
+
+  #result-container {
+    font-size: 1.2rem;
   }
 }

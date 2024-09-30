@@ -19,6 +19,8 @@ let rightType = localStorage.getItem('rightType');
 let rightBoard = document.getElementById('right-player-container');
 let leftBoard = document.getElementById('left-player-container');
 const result = document.getElementById('result');
+const resultContainer = document.getElementById('result-container');
+const resetBtn = document.getElementById('reset-btn');
 const randomizeBtn = document.getElementById('randomize');
 const homeBtn = document.getElementById('home-btn');
 const preGameControls = document.getElementById('pre-game-controls-container');
@@ -70,20 +72,16 @@ function handleGameEnd(player) {
   document.querySelectorAll('.board').forEach((board) => {
     board.classList.toggle('pointer-events-disabled', true);
   });
-  result.textContent = `${player.name} won`;
+  resultContainer.classList.toggle('hidden', false);
+  result.textContent = `${getDisplayName(player.side)} won`;
   isRunning = false;
 }
 
 async function handleHomeBtn(e) {
   isRunning = false;
-  let miniShipsContainerOne = document.getElementById(
-    `left-mini-ships-container`
-  );
-  let miniShipsContainerTwo = document.getElementById(
-    `right-mini-ships-container`
-  );
-  miniShipsContainerOne.innerHTML = '';
-  miniShipsContainerTwo.innerHTML = '';
+  document.getElementById(`left-mini-ships-container`).innerHTML = '';
+  document.getElementById(`right-mini-ships-container`).innerHTML = '';
+  document.getElementById(`drag-ships-container`).innerHTML = '';
   leftBoard.innerHTML = '';
   rightBoard.innerHTML = '';
   result.textContent = '';
@@ -195,6 +193,7 @@ export function refreshPlayerBoard(player) {
   let miniShipsContainer = document.getElementById(
     `${player.side}-mini-ships-container`
   );
+  let dragShipContainer = document.getElementById(`drag-ships-container`);
   let oppositePlayer = player.name === playerOne.name ? playerTwo : playerOne;
 
   if (isRunning) {
@@ -208,6 +207,7 @@ export function refreshPlayerBoard(player) {
       return;
     }
     miniShipsContainer.innerHTML = '';
+    dragShipContainer.innerHTML = '';
     miniShipsContainer.appendChild(shipsBoardDisplay(player.side));
     displayHitShip(player);
   } else if (!isRunning && player.side === 'left' && player.type === 'human') {
@@ -218,6 +218,7 @@ export function refreshPlayerBoard(player) {
     oppositePlayer.type === 'cpu'
   ) {
     miniShipsContainer.innerHTML = '';
+    dragShipContainer.innerHTML = '';
     miniShipsContainer.appendChild(shipsBoardDisplay(player.side));
   }
 
@@ -246,21 +247,21 @@ function displayNames() {
   let playerTwoTitle = document.getElementById('player-two');
   playerOneTitle.textContent = '';
   playerTwoTitle.textContent = '';
-  playerOneTitle.textContent = playerOne.name;
-  if (playerOne.type === playerTwo.type) {
-    playerOne.name = `${playerOne.name} One`;
-    playerTwo.name = `${playerTwo.name} Two`;
-    playerOneTitle.textContent = playerOne.name;
-    playerTwoTitle.textContent = playerTwo.name;
-    return;
+  playerTwoTitle.style.display = 'block';
+  playerOneTitle.textContent = getDisplayName('left');
+
+  if (isRunning || playerOne.type === 'cpu')
+    playerTwoTitle.textContent = getDisplayName('right');
+}
+
+function getDisplayName(side = 'left') {
+  let leftName = playerOne.name;
+  let rightName = playerTwo.name;
+  if (leftName === rightName) {
+    leftName += ' One';
+    rightName += ' Two';
   }
-  if (
-    isRunning ||
-    (isRunning && playerTwo.type === 'cpu') ||
-    (!isRunning && playerOne.type === 'cpu')
-  ) {
-    playerTwoTitle.textContent = playerTwo.name;
-  }
+  return side === 'left' ? leftName : rightName;
 }
 
 function handleHumanVsCpuGame() {
@@ -317,6 +318,10 @@ startCpuGameBtn.onclick = async () => {
   }
 };
 
+function handleResetGame() {
+  resultContainer.classList.toggle('hidden', true);
+}
+
 document.body.addEventListener('click', (e) => {
   document.querySelectorAll('.vs').forEach((el) => {
     el.classList.toggle('expanded-vs', false);
@@ -327,6 +332,7 @@ document.body.addEventListener('click', (e) => {
 document.getElementById('title').addEventListener('click', handleHomeBtn);
 document.getElementById('start-game').onclick = startGame;
 homeBtn.addEventListener('click', handleHomeBtn);
+resetBtn.addEventListener('click', handleResetGame);
 
 document.onreadystatechange = () => {
   if (document.readyState === 'complete') {

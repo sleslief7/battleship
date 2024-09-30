@@ -20,7 +20,11 @@ export function shipsBoardDisplay(side) {
     let shipName = document.createElement('div');
     shipName.classList.add('ship-name');
     shipName.textContent = `${ship.name}`;
-    shipAndName.append(shipBoxContainer, shipName);
+    if (side === 'left') {
+      shipAndName.appendChild(shipName);
+    }
+    shipAndName.append(shipBoxContainer);
+    if (side === 'right') shipAndName.appendChild(shipName);
 
     shipIllustration.appendChild(shipAndName);
     shipsContainer.appendChild(shipIllustration);

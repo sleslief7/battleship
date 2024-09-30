@@ -9,9 +9,7 @@ let dragShipTiles = [];
 const pixels = 48;
 
 export function buildDraggableShips(player) {
-  const boardBuilderControls = document.getElementById(
-    `${player.side}-mini-ships-container`
-  );
+  const boardBuilderControls = document.getElementById(`drag-ships-container`);
   boardBuilderControls.innerHTML = '';
 
   let resetShipsBtn = document.createElement('button');
