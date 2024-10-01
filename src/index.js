@@ -69,6 +69,7 @@ async function handleCpuPlay(player) {
 }
 
 function handleGameEnd(player) {
+  displayCurrentTurn(null);
   document.querySelectorAll('.board').forEach((board) => {
     board.classList.toggle('pointer-events-disabled', true);
   });
@@ -267,6 +268,7 @@ function getDisplayName(side = 'left') {
 }
 
 function handleHumanVsCpuGame() {
+  leftBoard.classList.toggle('pointer-events-disabled', false);
   refreshPlayerBoard(playerOne);
   preGameControls.classList.toggle('hidden', false);
   preGameControls.querySelectorAll('button').forEach((button) => {
@@ -280,7 +282,8 @@ function handleHumanVsCpuGame() {
 function handleCpuVsCpuGame() {
   placePlayerShips(playerOne);
   placePlayerShips(playerTwo);
-
+  leftBoard.classList.toggle('pointer-events-disabled', false);
+  rightBoard.classList.toggle('pointer-events-disabled', false);
   preGameControls.classList.toggle('hidden', false);
   preGameControls.querySelectorAll('button').forEach((button) => {
     button.classList.toggle('hidden', true);
@@ -306,6 +309,7 @@ startCpuGameBtn.onclick = async () => {
   isRunning = true;
   let isLeftPlayerTurn = true;
   while (isRunning) {
+    displayCurrentTurn(isLeftPlayerTurn ? 'left' : 'right');
     const currentPlayer = isLeftPlayerTurn ? playerOne : playerTwo;
     const oppositePlayer = isLeftPlayerTurn ? playerTwo : playerOne;
     result.textContent = '';
@@ -319,6 +323,13 @@ startCpuGameBtn.onclick = async () => {
     isLeftPlayerTurn = !isLeftPlayerTurn;
   }
 };
+
+function displayCurrentTurn(side = null) {
+  const l = document.querySelector(`.board-plus-mini-ships-container.left`);
+  const r = document.querySelector(`.board-plus-mini-ships-container.right`);
+  l.style.opacity = side === 'left' ? 0.7 : 1;
+  r.style.opacity = side === 'right' ? 0.7 : 1;
+}
 
 async function handleResetGame() {
   modal.classList.toggle('slide-in-bck-center', false);
