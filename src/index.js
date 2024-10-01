@@ -73,6 +73,7 @@ function handleGameEnd(player) {
     board.classList.toggle('pointer-events-disabled', true);
   });
   modal.showModal();
+  modal.classList.toggle('slide-out-bck-center', false);
   modal.classList.toggle('slide-in-bck-center', true);
   result.textContent = `${getDisplayName(player.side)} won`;
   isRunning = false;
@@ -322,7 +323,7 @@ startCpuGameBtn.onclick = async () => {
 async function handleResetGame() {
   modal.classList.toggle('slide-in-bck-center', false);
   modal.classList.toggle('slide-out-bck-center', true);
-  await delay(700);
+  await delay(750);
   modal.close();
   document.getElementById(`left-mini-ships-container`).innerHTML = '';
   document.getElementById(`right-mini-ships-container`).innerHTML = '';
