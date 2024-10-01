@@ -126,22 +126,34 @@
         </div>
       </div>
       <div id="game-page">
-        <p id="result"></p>
+        <dialog id="result-container">
+          <div id="modal-content">
+            <p id="result"></p>
+            <button id="reset-btn" class="btn" title="Reset Game">
+              <i class="fa-solid fa-arrow-rotate-left"></i>
+            </button>
+          </div>
+        </dialog>
         <div id="boards-container">
           <div class="board-and-title">
-            <h2 class="players" id="player-one"></h2>
             <div class="board-plus-mini-ships-container">
-              <div id="left-player-container" class="gameBoard"></div>
               <div id="left-mini-ships-container"></div>
+              <div class="board-and-name">
+                <div class="players" id="player-one"></div>
+                <div id="left-player-container" class="gameBoard"></div>
+              </div>
+              <div id="drag-ships-container"></div>
             </div>
           </div>
           <div class="board-and-title">
-            <h2 class="players" id="player-two"></h2>
             <div class="board-plus-mini-ships-container">
-              <div
-                id="right-player-container"
-                class="gameBoard pointer-events-disabled"
-              ></div>
+              <div class="board-and-name">
+                <div class="players" id="player-two"></div>
+                <div
+                  id="right-player-container"
+                  class="gameBoard pointer-events-disabled"
+                ></div>
+              </div>
               <div id="right-mini-ships-container"></div>
             </div>
           </div>
