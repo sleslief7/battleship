@@ -34,7 +34,6 @@ async function handleTileClick(e, player) {
   const x = tile.getAttribute('data-x');
   const y = tile.getAttribute('data-y');
   let oppositePlayer = player.side === playerOne.side ? playerTwo : playerOne;
-
   let play = gameboard.receiveAttack(x, y);
   refreshPlayerBoard(player);
 
@@ -58,6 +57,7 @@ async function handleTileClick(e, player) {
 async function handleCpuPlay(player) {
   let play = true;
   while (play && isRunning) {
+    displayCurrentTurn(player.side === 'left' ? 'right' : 'left');
     if (player.difficulty === 'regular') {
       play = await player.gameboard.randomPlay();
       if (isRunning) refreshPlayerBoard(player);
@@ -66,6 +66,7 @@ async function handleCpuPlay(player) {
       if (isRunning) refreshPlayerBoard(player);
     }
   }
+  displayCurrentTurn(player.side === 'left' ? 'left' : 'right');
 }
 
 function handleGameEnd(player) {
@@ -105,6 +106,8 @@ function startGame() {
   displayNames();
   preGameControls.classList.toggle('hidden', true);
   rightBoard.classList.toggle('pointer-events-disabled', false);
+  leftBoard.classList.toggle('pointer-events-disabled', true);
+  displayCurrentTurn('left');
   refreshPlayerBoard(playerOne);
   refreshPlayerBoard(playerTwo);
 }
@@ -315,8 +318,8 @@ startCpuGameBtn.onclick = async () => {
     result.textContent = '';
     await handleCpuPlay(oppositePlayer);
     refreshPlayerBoard(currentPlayer);
-    if (currentPlayer.gameboard.areAllShipsSunk()) {
-      handleGameEnd(oppositePlayer);
+    if (oppositePlayer.gameboard.areAllShipsSunk()) {
+      handleGameEnd(currentPlayer);
       return;
     }
     isRunning = isRunning && !currentPlayer.gameboard.areAllShipsSunk();

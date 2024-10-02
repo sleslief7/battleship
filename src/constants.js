@@ -6,4 +6,4 @@ export const SHIP_MODELS = [
   { name: 'Submarine', length: 3 },
   { name: 'Destroyer', length: 2 },
 ];
-export const PLAYING_TIME = 400;
+export const PLAYING_TIME = 600;
