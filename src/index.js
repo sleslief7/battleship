@@ -226,6 +226,9 @@ export function refreshPlayerBoard(player) {
     miniShipsContainer.innerHTML = '';
     dragShipContainer.innerHTML = '';
     miniShipsContainer.appendChild(shipsBoardDisplay(player.side));
+    document.querySelectorAll('.board').forEach((board) => {
+      board.classList.toggle('pointer-events-disabled', true);
+    });
   }
 
   if (player.side === 'right' && player.type === 'cpu') {
